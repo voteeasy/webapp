@@ -14,6 +14,19 @@ This builds the web application from the current source code and starts it
 once the database health check passes. The application is available at
 <http://localhost:8080>.
 
+If port 8080 is already used (for example by a local Maven run), choose a
+free host port:
+
+```bash
+WEBAPP_PORT=18080 docker compose up --build -d
+```
+
+The application is then available at <http://localhost:18080>.
+
+HTML templates and static assets (CSS, JavaScript and images) are included
+in the application JAR. Compose configures Spring to load them from the
+classpath; no source-directory mounts are required.
+
 ```bash
 docker compose logs -f webapp
 docker compose down
