@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<body>
+<div sec:authorize="isAuthenticated()">
+    <div class="form-group col-md-8" th:fragment="showRoles">
+        <span th:text="#{footer.roles}"></span>
+        <ul class="list-group" th:each="role : ${#authentication.getAuthorities()}">
+            <li class="list-group-item disabled">
+                <div class="badge" th:switch="${role.toString()}">
+                    <i aria-hidden="true" class="fa fa-circle border-dark rounded-circle border"
+                       style="color:darkgreen;" th:case="ROLE_USER"></i>
+                    <i aria-hidden="true" class="fa fa-circle border-dark rounded-circle border" style="color:yellow;"
+                       th:case="ROLE_ADMIN"></i>
+                    <i aria-hidden="true" class="fa fa-circle border-dark rounded-circle border"
+                       style="color:firebrick;" th:case="ROLE_TENANT_ADMIN"></i>
+                </div>
+                <span th:text="#{'role.'+${role.toString()}}"></span>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+
+

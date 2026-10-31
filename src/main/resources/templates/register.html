@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <link th:replace="~{fragments/headCss :: link}"/>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="Register account by token page - VoteEasy" name="description">
+    <title th:text="#{title.register}"></title>
+    <meta content="VoteEasy" name="author">
+    <style>
+        button#toggle-passwordAgain {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            z-index: 9;
+            width: 28px;
+            height: 30px;
+            background: 0;
+            border: 0;
+        }
+
+        button#toggle-passwordAgain:active,
+        button#toggle-passwordAgain:focus,
+        button#toggle-passwordAgain:hover {
+            cursor: pointer;
+        }
+
+        button#toggle-passwordAgain:focus {
+            outline: none !important;
+        }
+    </style>
+    <!--/*link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha256-T/zFmO5s/0aSwc6ics2KLxlfbewyRz6UNw1s3Ppf5gE=" rel="stylesheet"*/-->
+    <!--/*link crossorigin="anonymous" href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet"/*/-->
+</head>
+<body>
+<div class="container">
+    <div class="col-md-10">
+        <img alt="VoteEasy logo" loading="lazy" th:src="@{/img/logo2.png}">
+        <h2 class="form-signin-heading" th:text="#{register.headline}"></h2>
+        <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+        <div th:if="not ${param.regsuccess}" th:text="#{register.intro}"></div>
+
+        <div class="alert alert-primary" role="alert" th:if="${param.error}"
+             th:text="#{register.error.invalid}"></div>
+        <div class="alert alert-success" role="alert" th:if="${param.regsuccess}">
+            <span th:text="#{login.registration.success(${param.newUsername}, ${param.newTenant})}"></span>
+            <a target="_blank" th:href="@{/login}"><i class="fas fa-sign-in-alt"></i> <span
+                    th:text="#{menu.login}"></span></a>
+        </div>
+
+        <!--/* This is an ugly hack to prevent JS errors in Cypress runs as the pw/pwAgain fields are invisible on regSuccess */-->
+        <form style="visibility: hidden;" th:unless="not ${param.regsuccess}">
+            <input
+                    id="password"
+                    type="password" th:value="${param.pp}">
+            <button
+                    class="d-none" id="toggle-password"
+                    type="button"></button>
+            <input
+                    id="passwordAgain"
+                    type="password" th:value="${param.pp}">
+            <button
+                    class="d-none" id="toggle-passwordAgain"
+                    type="button"></button>
+        </form>
+
+        <form class="form-signin" method="post" th:action="@{/register}" th:if="not ${param.regsuccess}"
+              th:object="${register}">
+            <div class="form-group">
+                <label class="col-form-label" for="token" th:text="#{register.form.token}"></label>
+                <input autocomplete="username" autofocus class="form-control" id="token" name="token" required
+                       th:placeholder="#{register.form.token.placeholder}" type="text" th:value="${param.uu}">
+            </div>
+            <div th:text="#{register.process}"></div>
+
+            <div class="form-group">
+                <label class="col-form-label" for="password" th:text="#{changeuser.password}"></label>
+                <div class="input-group">
+                    <input
+                            autocapitalize="off" autocomplete="new-password" autocorrect="off" class="form-control"
+                            id="password" spellcheck="false" th:field="*{password}"
+                            th:placeholder="#{changepassword.password.placeholder}" th:value="${param.pp}"
+                            type="password">
+                    <button aria-label="Show password as plain text. Warning: this will display your password on the screen."
+                            class="d-none" id="toggle-password"
+                            type="button"></button>
+                </div>
+                <span
+                        class="text-danger" th:errors="*{password}"
+                        th:if="${#fields.hasErrors('password')}"></span>
+                <span
+                        class="text-danger" th:errors="*{global}"
+                        th:if="${#fields.hasGlobalErrors()}"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="col-form-label" for="passwordAgain"
+                       th:text="#{changeuser.passwordAgain}"></label>
+                <div class="input-group">
+                    <input
+                            autocapitalize="off" autocomplete="new-password-again" autocorrect="off"
+                            class="form-control" id="passwordAgain"
+                            spellcheck="false" th:field="*{passwordAgain}"
+                            th:placeholder="#{changepassword.passwordAgain.placeholder}" th:value="${param.pp}"
+                            type="password">
+                    <button aria-label="Show password as plain text. Warning: this will display your password on the screen."
+                            class="d-none" id="toggle-passwordAgain"
+                            type="button"></button>
+                </div>
+                <span
+                        class="text-danger" th:errors="*{passwordAgain}"
+                        th:if="${#fields.hasErrors('passwordAgain')}"></span>
+                <span
+                        class="text-danger" th:errors="*{global}"
+                        th:if="${#fields.hasGlobalErrors()}"></span>
+
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-block" disabled="disabled" id="register"
+                    type="submit"><i class="far fa-keyboard"></i> <span th:text="#{register.button}"></span></button>
+        </form>
+        <p class="mt-5 mb-3 text-muted">&copy; 2020-<span
+                th:text="${#dates.format(#execInfo.now.time, 'yyyy')}"></span> <span th:text="#{title.main}"></span>
+            | <a th:href="#{footer.homepage}" th:text="#{login.form.backhome}"></a>
+            | <a target="_blank" th:href="#{footer.agb.link}"><span th:text="#{footer.agb.txt}"></span></a>
+        </p>
+    </div>
+</div>
+
+<script th:replace="~{fragments/loadJs :: script}"></script>
+<script>
+    $(document).ready(function () {
+        $('input').blur(function () {
+            let samePasswords = false;
+
+            let pwField = $('#password').val();
+            let pwAgainField = $('#passwordAgain').val();
+
+            if (pwField === pwAgainField) {
+                samePasswords = true;
+            }
+
+            if (samePasswords) {
+                $('.btn[type="submit"]').removeAttr('disabled');
+            } else {
+                $('.btn[type="submit"]').attr('disabled', 'disabled');
+            }
+        });
+    });
+</script>
+<script th:src="@{/js/show-password-toggle.min.js}"></script>
+<script>
+    // 20210228: https://github.com/coliff/bootstrap-show-password-toggle/issues/12
+    // manually copied over script adapted for 2nd button field from
+    // https://github.com/coliff/bootstrap-show-password-toggle/blob/master/js/show-password-toggle.js
+    // adapted field ids
+    document.getElementById("passwordAgain").classList.add("input-password");
+    document.getElementById("toggle-passwordAgain").classList.remove("d-none");
+    const passwordAgainInput = document.getElementById("passwordAgain");
+    const togglePasswordAgainButton = document.getElementById("toggle-passwordAgain");
+    togglePasswordAgainButton.addEventListener("click", togglePasswordAgain);
+
+    function togglePasswordAgain() {
+        if (passwordAgainInput.type === "password") {
+            passwordAgainInput.type = "text";
+            togglePasswordAgainButton.setAttribute("aria-label", "Hide password.");
+        } else {
+            passwordAgainInput.type = "password";
+            togglePasswordAgainButton.setAttribute(
+                "aria-label",
+                "Show password as plain text. " +
+                "Warning: this will display your password on the screen."
+            );
+        }
+    }
+</script>
+</body>
+</html>

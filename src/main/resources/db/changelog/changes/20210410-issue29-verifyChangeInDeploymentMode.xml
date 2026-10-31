@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20210410-#29" author="otg">
+        <comment>Add example table to verify it works in production</comment>
+        <createTable tableName="worksinproduction">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="20210411-#29" author="otg">
+        <comment>Remove example table to verify it works in production</comment>
+        <delete tableName="worksinproduction"/>
+    </changeSet>
+    <changeSet id="20210411-#29-dropTable" author="otg">
+        <comment>Drop example table to verify it works in production</comment>
+        <dropTable cascadeConstraints="true" tableName="worksinproduction"/>
+    </changeSet>
+</databaseChangeLog>

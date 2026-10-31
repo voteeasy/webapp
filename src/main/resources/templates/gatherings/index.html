@@ -1,0 +1,114 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="10" http-equiv="Refresh">
+    <title th:text="#{menu.gatherings}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.gathering}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/gatherings/new}"> <i class="fas fa-user-plus ml-2"></i>
+            <span
+                    th:text="#{menu.newGathering}"></span></a></li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <h3 th:text="#{title.gathering.overview}"></h3>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.name}"></th>
+                <th th:text="#{headers.commands}"></th>
+                <th th:text="#{headers.startedAt}"></th>
+                <th th:text="#{headers.startedBy}"></th>
+                <th sec:authorize="hasRole('ADMIN')">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${gatherings.isEmpty()}">
+                <td colspan="6" th:text="#{gathering.nogatherings}"></td>
+            </tr>
+            <tr th:each="gathering: ${gatherings}" th:unless="${gatherings.isEmpty()}">
+                <td th:if="${participation != null && gathering.getId().equals(participation.getEvent().getId())}">
+                    <i class="fas fa-handshake" style="color:darkgreen"></i> <span
+                        th:text="${gathering.name}"></span>
+                </td>
+                <td th:text="${gathering.name}"
+                    th:unless="${participation != null && gathering.getId().equals(participation.getEvent().getId())}">
+                </td>
+
+                <td th:if="${participation != null && gathering.getId().equals(participation.getEvent().getId())}">
+                    <div class="pt-1">
+                        <a class="btn btn-primary"
+                           th:href="@{/votings/proposals/{id}(id=${gathering.id})}"><i
+                                class="fas fa-business-time ml-2"></i> <span th:text="#{menu.voteOptions}"></span></a>
+                    </div>
+                    <div class="pt-1">
+                        <a class="btn btn-outline-primary"
+                           th:href="@{/results/{id}(id=${gathering.id})}"><i
+                                class="fas fa-table ml-2"></i> <span th:text="#{menu.resultview}"></span></a>
+                    </div>
+                    <div class="pt-2">
+                        <form action="#"
+                              method="post"
+                              th:action="@{/participation/leave/{gatheringId}(gatheringId=${gathering.id})}">
+                            <button class="btn btn-info">
+                                <i class="fas fa-sign-out-alt ml-2"></i> <span th:text="#{menu.leave}"></span>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="pt-2" sec:authorize="hasRole('ADMIN')">
+                        <a class="btn btn-success"
+                           th:href="@{/votings/proposals/add/{id}(id=${gathering.id})}">
+                            <i class="fas fa-handshake ml-2"></i> <span th:text="#{menu.newVoteProposal}"></span></a>
+                    </div>
+
+                </td>
+                <td th:unless="${participation != null && gathering.getId().equals(participation.getEvent().getId())}">
+                    <div class="pt-1">
+                        <form action="#"
+                              method="post"
+                              th:action="@{/participation/participate/{gatheringId}(gatheringId=${gathering.id})}">
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-business-time ml-2"></i> <span th:text="#{menu.joinGathering}"></span>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="pt-1" sec:authorize="hasRole('ADMIN')">
+                        <a class="btn btn-success"
+                           th:href="@{/votings/proposals/add/{id}(id=${gathering.id})}">
+                            <i class="fas fa-handshake ml-2"></i> <span th:text="#{menu.newVoteProposal}"></span></a>
+                    </div>
+                    <div class="pt-1">
+                        <a class="btn btn-outline-primary"
+                           th:href="@{/results/{id}(id=${gathering.id})}"><i
+                                class="fas fa-table ml-2"></i> <span th:text="#{menu.resultview}"></span></a>
+                    </div>
+                </td>
+                <td th:text="${#dates.format(gathering.startedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${gathering.startedBy?.getUserName()}"></td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <form action="#" method="post" th:action="@{/gatherings/delete/{id}(id=${gathering.id})}">
+                        <button class="btn btn-danger" type="submit">
+                            <i class="fa fa-trash-alt ml-2"></i> <span th:text="#{menu.deleteGathering}"></span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <link th:replace="~{fragments/headCss :: link}"/>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="VoteEasy - register for free page" name="description">
+    <meta content="VoteEasy" name="author">
+    <title th:if="not ${param.regsuccess}" th:text="#{selfregister.title}"></title>
+    <title th:if="${param.regsuccess}" th:text="#{selfregister.title.success(${param.inittenant})}"></title>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-10">
+        <img alt="VoteEasy logo" loading="lazy" th:src="@{/img/logo2.png}">
+        <h2 th:if="not ${param.regsuccess}" class="form-signin-heading" th:text="#{selfregister.headline}"></h2>
+        <h2 th:if="${param.regsuccess}" class="form-signin-heading"
+            th:text="#{selfregister.headline.success(${param.inittenant})}"></h2>
+        <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+
+        <p th:if="not ${param.regsuccess}" th:text="#{selfregister.intro}"></p>
+        <hr th:if="not ${param.regsuccess}"/>
+        <p th:if="${param.regsuccess}">
+            <span th:if="${param.inittime}" id="reg-time" th:text="${param.inittime}"></span><br/>
+            <span th:text="#{selfregister.intro.success}"></span>
+        </p>
+
+        <div id="logoutHint" class="alert alert-info" role="alert" th:if="${param.logoutHint}">
+            <span th:text="#{selfregister.warningifloggedin}"></span>
+            <a th:href="@{/logout}" target="_blank" th:text="#{selfregister.warningifloggedin.logout}"></a>
+            <span th:text="#{selfregister.warningifloggedin.suffix}"></span>
+        </div>
+
+        <div class="alert alert-primary" role="alert" th:if="${param.error}"
+             th:text="#{register.error.invalid}">
+        </div>
+
+        <div id="show-creds" class="alert alert-success" role="alert" th:if="${param.regsuccess}">
+            <span th:text="#{selfregister.showcredsintro(${param.inittenant})}"></span>
+        </div>
+        <div id="show-creds-details" class="alert alert-light" role="alert" th:if="${param.regsuccess}">
+            <table>
+                <tr>
+                    <th th:text="#{selfregister.table.label.desc}"></th>
+                    <th th:text="#{selfregister.table.label.tenant}"></th>
+                    <th th:text="#{selfregister.table.label.login}"></th>
+                    <th th:text="#{selfregister.table.label.password}"></th>
+                    <th>&nbsp;&nbsp;&nbsp;</th>
+                    <th th:text="#{selfregister.table.label.oneclick}"></th>
+                </tr>
+                <tr>
+                    <td th:text="#{selfregister.table.adminaccount}"></td>
+                    <td><span th:text="${param.inittenant}"></span></td>
+                    <td><span th:text="${param.inittenant}"></span>-admin</td>
+                    <td><span th:text="${param.initapw}"></span></td>
+                    <td></td>
+                    <td><a target="_blank"
+                           th:href="@{/login(tt=${param.inittenant}, uu=${param.inittenant}+'-admin', pp=${param.initapw})}">
+                        <img id="BARCODE-Admin" alt="BARCODE-Admin" loading="lazy"
+                             th:src="@{/qr/{tenant}/{username}/{pw}(tenant=${param.inittenant},username=${param.inittenant}+'-admin',pw=${param.initapw})}">
+                        <i class="fas fa-sign-in-alt"></i> <span
+                            th:text="#{menu.login}"></span>
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5"><br/></td>
+                </tr>
+                <tr>
+                    <td th:text="#{selfregister.table.useraccount}"></td>
+                    <td><span th:text="${param.inittenant}"></span></td>
+                    <td><span th:text="${param.inittenant}"></span></td>
+                    <td><span th:text="${param.initpw}"></span></td>
+                    <td></td>
+                    <td><a target="_blank"
+                           th:href="@{/login(tt=${param.inittenant}, uu=${param.inittenant}, pp=${param.initpw})}">
+                        <img id="BARCODE" alt="BARCODE-Login" loading="lazy"
+                             th:src="@{/qr/{tenant}/{username}/{pw}(tenant=${param.inittenant},username=${param.inittenant},pw=${param.initpw})}">
+                        <i
+                                class="fas fa-sign-in-alt"></i> <span
+                            th:text="#{menu.login}"></span>
+
+                    </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="change-pw-alert" class="alert alert-warning" role="alert" th:if="${param.regsuccess}"
+             th:text="#{selfregister.accountinfo}"></div>
+        <form class="form-signin" method="post" th:action="@{/registerselfservice}" th:if="not ${param.regsuccess}"
+              th:object="${register}">
+            <div class="form-group">
+                <label class="col-form-label" for="tenantname" th:text="#{selfregister.tenantname.label}"></label>
+                <span
+                        class="text-danger" th:errors="*{tenantname}"
+                        th:if="${#fields.hasErrors('tenantname')}"></span>
+                <input autocomplete="tenantname" autofocus class="form-control" id="tenantname" name="tenantname"
+                       required th:field="*{tenantname}"
+                       th:placeholder="#{selfregister.tenantname.placeholder}"
+                       type="text">
+            </div>
+            <div style="font-weight: bold;" th:utext="#{selfregister.captchawithlinks}"></div>
+            <hr/>
+            <span
+                    class="text-danger" th:errors="*{captcha}"
+                    th:if="${#fields.hasErrors('captcha')}"></span>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="captcha" id="inlineRadio1" value="car">
+                    <label class="form-check-label" for="inlineRadio1"><i class="fas fa-car"></i></label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="captcha" id="inlineRadio2" value="star">
+                    <label class="form-check-label" for="inlineRadio2"><i class="fas fa-star"></i></label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="captcha" id="inlineRadio3" value="bicycle">
+                    <label class="form-check-label" for="inlineRadio3"><i class="fas fa-bicycle"></i></label>
+                </div>
+            </div>
+            <span
+                    class="text-danger" th:errors="*{global}"
+                    th:if="${#fields.hasGlobalErrors()}"></span>
+
+            <button class="btn btn-lg btn-primary btn-block" id="register"
+                    type="submit"><i class="far fa-keyboard"></i> <span th:text="#{selfregister.submit}"></span>
+            </button>
+        </form>
+
+        <p class="mt-5 mb-3 text-muted">&copy; 2020-<span
+                th:text="${#dates.format(#execInfo.now.time, 'yyyy')}"></span> <span th:text="#{title.main}"></span>
+            | <a th:href="#{footer.homepage}" th:text="#{login.form.backhome}"></a>
+            | <a target="_blank" th:href="#{footer.agb.link}"><span th:text="#{footer.agb.txt}"></span></a>
+        </p>
+    </div>
+</div>
+
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

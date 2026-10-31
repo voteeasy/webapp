@@ -1,0 +1,62 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.changeuser}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.changeuser}"></h1>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="my-5">
+        <h3 th:text="#{menu.changeUsername}"></h3>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-10">
+                    <form action="#" method="post" th:action="@{/settings/changeName}" th:object="${account}">
+                        <input name="userId" th:value="${account.userId}" type="hidden"/>
+                        <input name="userName" th:value="${account.userName}" type="hidden"/>
+
+                        <div class="row">
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label" for="name" th:text="#{login.form.username}"></label>:
+                                <span th:placeholder="#{login.form.username}"
+                                      th:text="*{userName}"></span>
+                            </div>
+                            <div th:replace="~{fragments/showRoles :: showRoles}"></div>
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label" for="name" th:text="#{changeuser.fullname}"></label>
+                                <input
+                                        class="form-control" id="name" th:field="*{fullName}"
+                                        th:placeholder="#{changeuser.fullname}"
+                                        type="text">
+                                <span
+                                        class="text-danger" th:errors="*{fullName}"
+                                        th:if="${#fields.hasErrors('fullName')}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 pt-2">
+                                <input class="btn btn-primary ml-2" th:value="#{changeuser.submit}" type="submit">
+                                <input class="btn btn-danger ml-2" th:value="#{menu.resetForm}" type="reset"/>
+                            </div>
+
+                            <div class="form-group col-md-8"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

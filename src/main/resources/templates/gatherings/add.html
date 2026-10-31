@@ -1,0 +1,53 @@
+<!doctype html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.newGathering}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.newGathering}"></h1>
+    <ul>
+        <li><a th:href="@{/}"><i class="fas fa-home ml-2"></i> <span th:text="#{menu.home}"></span></a></li>
+        <li><a th:href="@{/gatherings/}"><i class="fas fa-swimmer ml-2"></i> <span th:text="#{menu.gatherings}"></span></a>
+        </li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="my-5">
+        <h3 th:text="#{title.gathering.create}"></h3>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-10">
+                    <form action="#" method="post" th:action="@{/gatherings/add}" th:object="${gathering}">
+                        <div class="row">
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label" for="name" th:text="#{headers.name}"></label>
+                                <input
+                                        class="form-control" id="name" th:field="*{name}"
+                                        th:placeholder="#{headers.name}"
+                                        type="text">
+                                <span
+                                        class="text-danger" th:errors="*{name}"
+                                        th:if="${#fields.hasErrors('name')}"></span>
+                            </div>
+                            <div class="col-md-6 pt-2">
+                                <input class="btn btn-primary ml-2" th:value="#{menu.newGathering}" id="newGathering" type="submit">
+                                <input class="btn btn-danger ml-2" th:value="#{menu.resetForm}" type="reset"/>
+                            </div>
+
+                            <div class="form-group col-md-8"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20210427-#91" author="otg">
+        <comment>Setup database table for Setting entity</comment>
+        <createTable tableName="setting">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="key" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scope" type="varchar(56)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(56)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="int8"/>
+            <column name="started_by_id" type="uuid"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="20210427-#91FK" author="otg">
+        <comment>Setup foreign keys for Setting entity</comment>
+        <addForeignKeyConstraint baseTableName="setting" baseColumnNames="started_by_id"
+                                 constraintName="FK_SETTING_USER_ID" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20210503-#91renameColumnForIdReference" author="otg">
+        <!-- hopefully the FK reference is corrected automatically -->
+        <!-- Column needs to have the suffix id otherwise schema validation will fail -->
+        <renameColumn tableName="setting" oldColumnName="started_by_id" newColumnName="created_by_id"/>
+    </changeSet>
+
+    <changeSet id="20210503-#91newColumnTenant" author="otg">
+        <addColumn tableName="setting">
+            <column name="tenant_id" type="uuid"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20210503-#91FK" author="otg">
+        <comment>Setup foreign keys for Setting to tenant</comment>
+        <addForeignKeyConstraint baseTableName="setting" baseColumnNames="tenant_id"
+                                 constraintName="FK_SETTING_TENANT_ID" referencedTableName="tenant"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

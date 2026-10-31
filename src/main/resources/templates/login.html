@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head th:insert="~{fragments/headFavicon}">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="Loginpage to VoteEasy" name="description">
+    <meta content="VoteEasy" name="author">
+    <!--/*link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha256-T/zFmO5s/0aSwc6ics2KLxlfbewyRz6UNw1s3Ppf5gE=" rel="stylesheet"*/-->
+    <!-- https://getbootstrap.com/docs/4.0/examples/signin/signin.css -->
+    <link crossorigin="anonymous" href="@{/css/signin.css}" rel="stylesheet"/>
+    <title th:text="#{title.login}"></title>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-10">
+        <form class="form-signin" method="post" th:action="@{/login}">
+            <img alt="VoteEasy logo" loading="lazy" th:src="@{/img/logo2.png}">
+            <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+            <h2 class="form-signin-heading" th:text="#{login.headline}"></h2>
+
+            <div class="alert alert-primary" role="alert" th:if="${param.error}" th:text="#{login.error.invalid}"></div>
+            <div class="alert alert-success" role="alert" th:if="${param.success}"
+                 th:text="#{login.logout.success}"></div>
+            <div class="alert alert-success" role="alert" th:if="${param.regsuccess}"
+                 th:text="#{login.registration.success(${param.u}, ${param.t})}"></div>
+
+            <div class="form-group">
+                <label class="col-form-label sr-only" for="organisation" th:text="#{login.form.tenant}"></label>
+                <input autocomplete="organisation" autofocus class="form-control" id="organisation" name="organisation"
+                       required
+                       th:placeholder="#{login.form.tenant.placeholder}" type="text" th:value="${param.tt}">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label sr-only" for="username" th:text="#{login.form.username}"></label>
+                <input autocomplete="username" class="form-control" id="username" name="username" required
+                       th:placeholder="#{login.form.username.placeholder}" th:value="${param.uu}"
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label sr-only" for="password" th:text="#{login.form.password}"></label>
+                <div class="input-group">
+                    <input autocapitalize="off" autocomplete="password" autocorrect="off" class="form-control"
+                           id="password"
+                           name="password" required spellcheck="false"
+                           th:placeholder="#{login.form.password.placeholder}" th:value="${param.pp}"
+                           type="password">
+                    <button aria-label="Show password as plain text. Warning: this will display your password on the screen."
+                            class="d-none" id="toggle-password"
+                            type="button">
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <input id="remember-me"
+                       name="remember-me" type="checkbox"/>
+                <label class="col-form-label"
+                       for="remember-me" th:text="#{login.form.rememberme}"></label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" id="login" th:text="#{login.button}"
+                    type="submit"></button>
+            <p class="mt-5 mb-3 text-muted">&copy; 2020-<span
+                    th:text="${#dates.format(#execInfo.now.time, 'yyyy')}"></span> <span th:text="#{title.main}"></span>
+                | <a th:href="#{footer.homepage}" th:text="#{login.form.backhome}"></a>
+                | <a target="_blank" th:href="#{footer.agb.link}"><span th:text="#{footer.agb.txt}"></span></a>
+            </p>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/show-password-toggle.min.js}"></script>
+</body>
+</html>

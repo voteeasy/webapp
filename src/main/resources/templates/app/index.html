@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head th:insert="~{fragments/headFavicon}">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title th:text="#{title.main}"></title>
+</head>
+<body>
+<nav th:replace="~{fragments/navbar.html :: nav}"></nav>
+<main class="container">
+    <div th:insert="~{fragments/principal :: principal}"></div>
+
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <div class="bg-light p-5 rounded">
+        <h2 th:text="#{header.welcome}"></h2>
+        <div th:each="number : ${#numbers.sequence( 0, 2, 1)}">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-4 text-wrap" th:text="#{'welcomepage.header'+ ${number}}"></h1>
+                    <div th:switch="${number}">
+                        <div th:case="0">
+                            <!--/* https://stackoverflow.com/questions/41305498/how-to-define-a-link-in-part-of-an-i18n-thymeleaf-spring-message */-->
+                            <a th:href="@{/gatherings/}"><i class="fas fa-handshake fa-10x"></i></a>
+                        </div>
+
+                        <div th:case="1">
+                            <a th:href="@{/gatherings/participate/{id}(id=${participation.event.id})}"
+                               th:if="${participation}">
+                                <i class="fas fa-clipboard fa-10x"></i></a>
+                            <i class="fas fa-clipboard fa-10x" th:unless="${participation}"></i>
+                        </div>
+
+                        <div th:case="*">
+                            <a th:href="@{/results/{id}(id=${participation.event.id})}"
+                               th:if="${participation}">
+                                <i class="fas fa-comments fa-10x"></i></a>
+                            <i class="fas fa-comments fa-10x" th:unless="${participation}"></i>
+                        </div>
+                    </div>
+                    <p class="lead" th:text="#{'welcomepage.lead' + ${number}}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

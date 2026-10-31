@@ -1,0 +1,48 @@
+<!doctype html>
+<html th:lang="${#locale.language}"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.participations}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.participations}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <h3 th:text="#{participation.overview}"></h3>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.startedAt}"></th>
+                <th th:text="#{headers.name}"></th>
+                <th th:text="#{headers.stoppedAt}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${participations.isEmpty()}">
+                <td colspan="3" th:text="#{participation.noparticipations}"></td>
+            </tr>
+            <tr th:each="participation: ${participations}" th:unless="${participations.isEmpty()}">
+                <td th:text="${#dates.format(participation.startedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td><span th:if="${participation.getStoppedAt() == null}"><i
+                        class="fas fa-handshake fa-4x"></i></span>&nbsp;<span
+                        th:text="${participation.event.name}"></span>
+                </td>
+                <td th:text="${#dates.format(participation.stoppedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

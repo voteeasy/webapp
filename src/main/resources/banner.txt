@@ -1,0 +1,11 @@
+                                                                   
+                    d8P                                            
+                 d888888P                                          
+?88   d8P d8888b   ?88'   d8888b d8888b d888b8b   .d888b,?88   d8P 
+d88  d8P'd8P' ?88  88P   d8b_,dPd8b_,dPd8P' ?88   ?8b,   d88   88  
+?8b ,88' 88b  d88  88b   88b    88b    88b  ,88b    `?8b ?8(  d88  
+`?888P'  `?8888P'  `?8b  `?888P'`?888P'`?88P'`88b`?888P' `?88P'?8b 
+                                                                )88
+                                                               ,d8P
+                                                            `?888P'
+------Proudly powered by Spring Boot ${spring-boot.version} ----- ${application.title} - ${application.formatted-version}

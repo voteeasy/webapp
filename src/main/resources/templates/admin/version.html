@@ -1,0 +1,47 @@
+<!doctype html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title th:text="#{title.main}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar.html :: nav}"></nav>
+
+<main class="container" role="main">
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="bg-light p-5 rounded">
+        <h2 th:text="#{admin.version.headline}"></h2>
+
+        <div class="table-responsive-md">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th th:text="#{headers.name}"></th>
+                    <th th:text="#{headers.count}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="version : ${versioninformation}" th:if="${versioninformation != null}">
+                    <td th:text="${version.getKey()}"></td>
+                    <td th:text="${version.getValue()}"></td>
+                </tr>
+                <tr th:each="version : ${gitinformation}" th:if="${gitinformation != null}">
+                    <td th:text="${version.getKey()}"></td>
+                    <td th:text="${version.getValue()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

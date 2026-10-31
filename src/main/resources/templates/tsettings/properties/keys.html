@@ -1,0 +1,46 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.tenantproperties}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container" sec:authorize="hasRole('TENANT_ADMIN')">
+    <h1 th:text="#{properties.overviewkeys}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.key}"></th>
+                <th th:text="#{headers.count}"></th>
+                <th th:text="#{headers.type}"></th>
+                <th th:text="#{headers.scope}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${keys.isEmpty()}">
+                <td colspan="3" th:text="#{properties.nokeys}"></td>
+            </tr>
+            <tr th:data-cy="${k}" th:each="k: ${keys}" th:unless="${keys.isEmpty()}">
+                <td th:text="${k.key}"></td>
+                <td th:text="${k.count}"></td>
+                <td><span th:text="#{'property.type.'+ ${k.type}}"></span></td>
+                <td><span th:text="#{'property.scope.'+ ${k.scope}}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <!-- add new entries here, one change per file -->
+    <include file="/db/changelog/changes/20210218-issue16-rememberMeSetup.xml"/>
+    <include file="/db/changelog/changes/20210401-issue29-databaseTablesVoteEasy.xml"/>
+    <include file="/db/changelog/changes/20210410-issue29-verifyChangeInDeploymentMode.xml"/>
+    <include file="/db/changelog/changes/20210419-issue89-publicBeta.xml"/>
+    <include file="/db/changelog/changes/20210427-issue91-settingEntity.xml"/>
+    <include file="/db/changelog/changes/20220512-issue212-indexesOnColumns.xml"/>
+</databaseChangeLog>

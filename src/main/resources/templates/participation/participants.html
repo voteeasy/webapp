@@ -1,0 +1,57 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{menu.gatherings}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container" sec:authorize="hasRole('ADMIN')">
+    <h1 th:text="#{title.participants}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/gatherings/}"> <i class="fas fa-handshake ml-2"></i>
+            <span
+                    th:text="#{menu.gatherings}"></span></a></li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <h3 th:if="${!participants.isEmpty()}" th:text="#{title.activeParticipants}"></h3>
+    <h4 th:if="${!participants.isEmpty()}" th:text="${participants[0].gathering}"></h4>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead th:if="${!participants.isEmpty()}">
+            <tr>
+                <th th:text="#{headers.since}"></th>
+                <th th:text="#{headers.name}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${participants.isEmpty()}">
+                <td colspan="2" th:text="#{participation.noparticipants}"></td>
+            </tr>
+            <tr th:each="participant: ${participants}" th:unless="${participants.isEmpty()}">
+                <td th:text="${#dates.format(participant.since, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <span
+                            th:text="${participant.getUserName()}"></span>
+                    (<span
+                        th:text="${participant.getFullName()}"></span>)
+                </td>
+            </tr>
+            <tr class="table-secondary" th:if="${!participants.isEmpty()}">
+                <td th:text="#{headers.participants}"></td>
+                <td colspan="2" th:text="${participants.size()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

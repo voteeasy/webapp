@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="userToken-field-index-#212" author="otg">
+        <comment>Index on table UserToken field token</comment>
+        <createIndex tableName="user_token" indexName="user_token_token_idx01">
+            <column name="token"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="tenant-field-index-#212" author="otg">
+        <comment>Index on table Tenant field name</comment>
+        <createIndex tableName="tenant" indexName="tenant_name_idx01">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="gathering-field-index-#212" author="otg">
+        <comment>Index on table Gathering field name</comment>
+        <createIndex tableName="gathering" indexName="gathering_name_idx01">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="option-field-index-#212" author="otg">
+        <comment>Index on table Option field name</comment>
+        <createIndex tableName="option" indexName="option_name_idx01">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="role-field-index-#212" author="otg">
+        <comment>Index on table Role field name</comment>
+        <createIndex tableName="role" indexName="role_name_idx01">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="user-field-index-#212" author="otg">
+        <comment>Index on table User fields userName and fullName</comment>
+        <createIndex tableName="user" indexName="user_username_idx01">
+            <column name="user_name"/>
+        </createIndex>
+        <createIndex tableName="user" indexName="user_fullname_idx01">
+            <column name="full_name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="voteproposal-field-index-#212" author="otg">
+        <comment>Index on table VoteProposal field name</comment>
+        <createIndex tableName="vote_proposal" indexName="voteproposal_name_idx01">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="setting-field-index-#212" author="otg">
+        <comment>Index on table Setting fields key and value</comment>
+        <createIndex tableName="setting" indexName="setting_key_idx01">
+            <column name="key"/>
+        </createIndex>
+        <createIndex tableName="setting" indexName="setting_value_idx01">
+            <column name="value"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

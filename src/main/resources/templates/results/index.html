@@ -1,0 +1,67 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{menu.resultview}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{menu.resultview}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li th:if="${voteResult.isPresent()}"><a th:href="@{/gatherings/}"><i aria-hidden="true"
+                                                                              class="fas fa-swimmer ml-2"></i> <span
+                th:text="#{menu.gatherings}"></span></a></li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <h3 class="text-wrap" th:if="${voteResult.isPresent()}"
+        th:text="#{title.results.overview(${voteResult.get().getGathering().getName()}, ${#dates.format(voteResult.get().generatedAt, 'yyyy-MM-dd HH:mm:ss')})}"></h3>
+    <span th:if="${voteResult.isEmpty() || voteResult.get().voteProposals.isEmpty()}"
+          th:text="#{results.noresults}"></span>
+    <div class="table-responsive-md table-hover"
+         th:unless="${voteResult.isEmpty() || voteResult.get().voteProposals.isEmpty()}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.name}"></th>
+                <th th:text="#{headers.selectedOptions}"></th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{headers.startedAt}"></th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{headers.stoppedAt}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--/* #48 split into two rows https://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html#synthetic-thblock-tag */-->
+            <!--/*/ <th:block th:each="result: ${voteResult.get().getVoteProposals()}"> /*/-->
+            <tr class="table-warning">
+                <td th:if="${result.getItemOfAgenda() == null}" th:text="${result.getName()}"></td>
+                <td th:unless="${result.getItemOfAgenda() == null}"><span th:text="${result.getItemOfAgenda()}"></span>:
+                    <span
+                            th:text="${result.getName()}"></span></td>
+                <td class="bg-warning" th:text="${result.getTotalCount()}"></td>
+                <td sec:authorize="hasRole('ROLE_ADMIN')"
+                    th:text="${#dates.format(result.startedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td sec:authorize="hasRole('ROLE_ADMIN')"
+                    th:text="${#dates.format(result.stoppedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+            <tr th:each="option : ${result.getOptions()}">
+                <td th:text="${option.getKey()}"></td>
+                <td colspan="3" th:text="${option.value}"></td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+            </tr>
+            <!--/*/ </th:block> /*/-->
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

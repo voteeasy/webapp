@@ -1,0 +1,70 @@
+<!doctype html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.addVote}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.addVote}"></h1>
+    <ul>
+        <li><a th:href="@{/}"><i class="fas fa-home ml-2"></i> <span th:text="#{menu.home}"></span></a></li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="container my-5">
+        <h3 th:text="#{title.vote.create(${proposal.name})}"></h3>
+        <form action="#" method="post" th:action="@{/votings/vote/dovote}" th:object="${vote}">
+
+            <!--/* in order to find proposal to vote for */-->
+            <input name="voteProposalId" th:value="${proposal.getId()}" type="hidden"/>
+
+            <!--/* base data */-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="col-md-10">
+                        <div class="row">
+                                <span
+                                        class="text-danger" th:errors="*{selectedOptions}"
+                                        th:if="${#fields.hasErrors('selectedOptions')}"></span>
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label" for="selectedOptions"
+                                       th:text="#{headers.options}"></label>
+                                <ol style="list-style-type:none;">
+                                    <li th:each="option : ${vote.availableOptions}">
+                                        <input id="selectedOptions" name="selectedOptions" th:value="${option}"
+                                               type="radio" required/>
+                                        <label th:for="selectedOptions" th:text="${option}"></label>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-6 pt-2">
+                                <input class="btn btn-primary ml-2" th:value="#{menu.doVote}" type="submit">
+                                <input class="btn btn-danger ml-2" th:value="#{menu.resetForm}" type="reset"/>
+                            </div>
+
+                            <div class="form-group col-md-8"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

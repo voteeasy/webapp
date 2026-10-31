@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20210403-#29" author="otg">
+        <comment>Setup database tables via XML-syntax</comment>
+        <createTable tableName="gathering">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(256)"/>
+            <column name="started_at" type="int8"/>
+            <column name="organisation_id" type="uuid"/>
+            <column name="started_by_id" type="uuid"/>
+        </createTable>
+
+        <createTable tableName="option">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(256)"/>
+            <column name="vote_proposal_id" type="uuid"/>
+        </createTable>
+
+        <createTable tableName="participation">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="started_at" type="int8"/>
+            <column name="stopped_at" type="int8"/>
+            <column name="event_id" type="uuid"/>
+            <column name="owner_id" type="uuid"/>
+        </createTable>
+
+        <createTable tableName="role">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+        </createTable>
+
+        <createTable tableName="tenant">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="int8"/>
+            <column name="enabled" type="boolean"/>
+            <column name="name" type="varchar(100)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="int8"/>
+            <column name="enabled" type="boolean"/>
+            <column name="full_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_hash" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reset_token" type="varchar(255)"/>
+            <column name="user_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tenant_name" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+                columnNames="user_name, tenant_name"
+                constraintName="UNIQUE_TENANT_USERNAME_COMBINATION"
+                tableName="user"
+        />
+
+        <createTable tableName="users_roles">
+            <column name="user_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_token">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="int8"/>
+            <column name="enabled" type="boolean"/>
+            <column name="redeemed_at" type="int8"/>
+            <column name="token" type="varchar(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="tenant_name" type="uuid"/>
+        </createTable>
+
+        <createTable tableName="vote">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="int8"/>
+            <column name="proposal_id" type="uuid"/>
+            <column name="voter_id" type="uuid"/>
+        </createTable>
+
+        <createTable tableName="vote_chosen_options">
+            <column name="vote_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="chosen_options_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="vote_proposal">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="int8"/>
+            <column name="is_admin_allowed_to_vote" type="boolean"/>
+            <column name="is_anonymized" type="boolean"/>
+            <column name="item_of_agenda" type="varchar(100)"/>
+            <column name="name" type="varchar(100)"/>
+            <column name="started_at" type="int8"/>
+            <column name="stopped_at" type="int8"/>
+            <column name="gathering_id" type="uuid"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20210403-#29-FK" author="otg">
+        <comment>Setup database foreign key constraints</comment>
+        <addForeignKeyConstraint baseTableName="gathering" baseColumnNames="organisation_id"
+                                 constraintName="FK_GATHERING_ORGANISATION_ID" referencedTableName="tenant"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="gathering" baseColumnNames="started_by_id"
+                                 constraintName="FK_GATHERING_STARTED_BY_USER_ID" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="option" baseColumnNames="vote_proposal_id"
+                                 constraintName="FK_OPTION_VOTE_PROPOSAL_ID" referencedTableName="vote_proposal"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="participation" baseColumnNames="event_id" constraintName="FK_PARTICIPATION_GATHERING_ID" referencedTableName="gathering"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="participation" baseColumnNames="owner_id" constraintName="FK_PARTICIPATION_USER_ID" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        
+        <addForeignKeyConstraint baseTableName="user" baseColumnNames="tenant_name" constraintName="FK_USER_TENANT_ID" referencedTableName="tenant"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="users_roles" baseColumnNames="role_id" constraintName="FK_USERS_ROLES_ROLE_ID" referencedTableName="role"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="users_roles" baseColumnNames="user_id" constraintName="FK_USERS_ROLES_USER_ID" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="user_token" baseColumnNames="tenant_name" constraintName="FK_USER_TOKEN_TENANT_ID" referencedTableName="tenant"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="vote" baseColumnNames="proposal_id" constraintName="FK_VOTE_VOTE_PROPOSAL_ID" referencedTableName="vote_proposal"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="vote" baseColumnNames="voter_id" constraintName="FK_VOTE_USERL_ID" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="vote_chosen_options" baseColumnNames="chosen_options_id" constraintName="FK_VOTE_CHOSEN_OPTIONS_OPTION_ID" referencedTableName="option"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="vote_chosen_options" baseColumnNames="vote_id" constraintName="FK_VOTE_CHOSEN_OPTIONS_VOTE_ID" referencedTableName="vote"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="vote_proposal" baseColumnNames="gathering_id" constraintName="FK_VOTE_PROPOSAL_GATHERING_ID" referencedTableName="gathering"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

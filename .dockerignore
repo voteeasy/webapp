@@ -1,0 +1,9 @@
+.git
+.github
+.idea
+.pi
+.m2
+target
+**/target
+*.log
+.DS_Store

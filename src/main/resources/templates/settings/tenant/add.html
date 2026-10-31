@@ -1,0 +1,83 @@
+<!doctype html>
+<html th:lang="${#locale.language}"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{tenantsadd.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/show-password-toggle.min.css}">
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.addTenant}"></h1>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="my-5">
+        <h3 th:text="#{tenantsadd.title}"></h3>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-10">
+                    <form action="#" method="post" th:action="@{/settings/tenant/add}" th:object="${tenant}">
+                        <div class="row">
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label" for="name" th:text="#{tenantsadd.name.label}"></label>
+                                <input
+                                        class="form-control" id="name" th:field="*{name}"
+                                        th:placeholder="#{tenantsadd.name.placeholder}"
+                                        type="text">
+                                <span class="text-danger" th:errors="*{global}"
+                                      th:if="${#fields.hasGlobalErrors()}"
+                                      th:text="${#messages.msg(#fields.globalErrors())}"></span>
+                                <span
+                                        class="text-danger" th:errors="*{name}"
+                                        th:if="${#fields.hasErrors('name')}"></span>
+
+                            </div>
+
+                            <div class="form-group col-md-8" th:text="#{changepassword.pwrules}"></div>
+
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label" for="password"
+                                       th:text="#{tenantsadd.adminpassword}"></label>
+                                <div class="input-group">
+                                    <input
+                                            autocapitalize="off" autocorrect="off" class="form-control" id="password"
+                                            spellcheck="false" th:field="*{adminPassword}"
+                                            th:placeholder="#{changepassword.password.placeholder}"
+                                            type="password">
+                                    <button aria-label="Show password as plain text. Warning: this will display your password on the screen."
+                                            class="d-none" id="toggle-password"
+                                            type="button"></button>
+                                </div>
+                                <span
+                                        class="text-danger" th:errors="*{adminPassword}"
+                                        th:if="${#fields.hasErrors('adminPassword')}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="pt-2">
+                                    <input class="btn btn-primary ml-2" th:value="#{tenantsadd.submit}" type="submit">
+                                </div>
+                                <div class="pt-2">
+                                    <input class="btn btn-danger ml-2" th:value="#{menu.resetForm}" type="reset"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-8"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+<script th:src="@{/js/show-password-toggle.min.js}"></script>
+</body>
+</html>

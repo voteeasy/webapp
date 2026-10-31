@@ -1,0 +1,141 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="10" http-equiv="Refresh">
+    <title th:text="#{title.proposal.overview}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{title.proposal.overview}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <div th:insert="~{fragments/principal :: principal}"></div>
+    <ul>
+        <li><a th:href="@{/}"><i class="fas fa-home ml-2"></i> <span th:text="#{menu.home}"></span></a></li>
+        <li th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') && !proposals.isEmpty()}">
+            <a th:href="@{/votings/proposals/add/{id}(id=${proposals.iterator().next().gathering.id})}">
+                <i class="fas fa-handshake ml-2"></i> <span th:text="#{menu.newVoteProposal}"></span></a>
+        </li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <h3 th:text="#{title.proposal.list}"></h3>
+    <div class="table-responsive-md">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{headers.name}"></th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th th:text="#{headers.options}"></th>
+                <th th:text="#{headers.createdAt}"></th>
+                <th th:text="#{headers.startedAt}"></th>
+                <th th:text="#{headers.stoppedAt}"></th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{headers.commands}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${proposals.isEmpty()}">
+                <td colspan="8" th:text="#{proposal.noproposals}"></td>
+            </tr>
+            <tr th:data-cy="${proposal.name}" th:each="proposal: ${proposals}" th:unless="${proposals.isEmpty()}">
+                <td th:if="${#strings.isEmpty(proposal.itemOfAgenda)}" th:text="${proposal.name}"></td>
+                <td th:text="${proposal.itemOfAgenda + ': ' + proposal.name}"
+                    th:unless="${#strings.isEmpty(proposal.itemOfAgenda)}"></td>
+                <td>
+                    <div class="sr-only" th:text="${proposal.id}"></div>
+                    <span th:if="${proposal.isAnonymized}"><i class="fas fa-lock fa-3x pt-2"></i></span>
+                    <span th:unless="${proposal.isAnonymized}"><i class="fas fa-lock-open fa-3x pt-2"></i></span>
+                    <span th:if="${proposal.isAdminAllowedToVote}">
+                        <i class="fa fa-user fa-3x pt-2" style="color:darkgreen;"></i>
+                    </span>
+                    <span th:unless="${proposal.isAdminAllowedToVote}">
+                        <i class="fas fa-user-slash fa-3x pt-2" style="color:darkred;"></i>
+                    </span>
+                </td>
+                <td>
+                    <a class="btn btn-primary"
+                       th:href="@{/votings/vote/{id}(id=${proposal.id})}"
+                       th:if="${proposal.startedAt != null && proposal.stoppedAt == null && (proposal.isAdminAllowedToVote() && #authorization.expression('hasRole(''ROLE_ADMIN'')') || !#authorization.expression('hasRole(''ROLE_ADMIN'')'))}">
+                        <i class="fas fa-business-time ml-2"></i> <span th:text="#{menu.doVote}"></span></a>
+
+                    <span th:if="${(proposal.startedAt == null && proposal.stoppedAt != null) || (proposal.startedAt == null && proposal.stoppedAt == null)}"
+                          th:text="#{voting.notStarted}"></span>
+
+                    <span th:if="${proposal.startedAt !=null && proposal.stoppedAt !=null}"
+                          th:text="#{voting.isOver}"></span>
+
+                    <div class="pt-1"
+                         th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || (proposal.stoppedAt != null)}">
+                        <a class="btn btn-info" th:href="@{/votes/proposal/{id}(id=${proposal.id})}">
+                            <i class="fas fa-list ml-2"></i> <span th:text="#{menu.showAllVotes}"></span></a>
+                    </div>
+                </td>
+                <td>
+                    <ul>
+                        <li th:each="option : ${proposal.options}" th:text="${option.name}"></li>
+                    </ul>
+                </td>
+                <td th:text="${#dates.format(proposal.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(proposal.startedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(proposal.stoppedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td sec:authorize="hasRole('ROLE_ADMIN')">
+                    <div class="pt-2">
+                        <a class="btn btn-warning"
+                           th:href="@{/votings/proposals/startVoting/{id}(id=${proposal.id})}"
+                           th:if="${proposal.startedAt == null}">
+                            <i class="fas fa-clock"></i> <span th:text="#{menu.startVoting}"></span></a>
+                    </div>
+                    <div class="pt-2">
+                        <a class="btn btn-warning pt-2"
+                           th:href="@{/votings/proposals/endVoting/{id}(id=${proposal.id})}"
+                           th:if="${proposal.stoppedAt == null && proposal.startedAt != null}">
+                            <i class="fas fa-stop ml-2"></i> <span th:text="#{menu.endVoting}"></span></a>
+                    </div>
+                    <div class="pt-2">
+                        <form action="#" method="post"
+                              th:action="@{/votings/proposals/delete/{id}(id=${proposal.id})}">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fa fa-trash-alt ml-2"></i> <span
+                                    th:text="#{menu.deleteProposal}"></span>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <h4 th:text="#{proposal.explanation}"></h4>
+    <div class="row">
+        <div class="col-sm pt-3">
+            <i class="fas fa-lock fa-3x"></i> = <span th:text="#{proposal.symbol.anonymized}"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm pt-3">
+            <i class="fas fa-lock-open fa-3x"></i> = <span th:text="#{proposal.symbol.notanonymized}"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm pt-3">
+            <i class="fa fa-user fa-3x" style="color:darkgreen;"></i> = <span
+                th:text="#{proposal.symbol.adminvote}"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm pt-3">
+            <i class="fas fa-user-slash fa-3x"
+               style="color:darkred;"></i> = <span th:text="#{proposal.symbol.noadminvote}"></span>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

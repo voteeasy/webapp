@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<body>
+<div sec:authorize="isAuthenticated()">
+    <div th:fragment="principal">
+        <div th:if="${user}">🖖 <span th:text="#{user.loggedIn(${user.userName})}"></span> / <span
+                th:text="${user.fullName}"></span></div>
+        <div th:text="${'🖖 '}+#{user.loggedIn(${#authentication.name})}" th:unless="${user}"></div>
+    </div>
+</div>
+</body>
+</html>
+
+

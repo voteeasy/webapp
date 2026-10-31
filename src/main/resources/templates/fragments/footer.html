@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer">
+    <div class="container">
+        <hr/>
+        <!--/* https://gist.github.com/oliveratgithub/7192c585ce6850692199036d46d3dade - shieldsIO yielded error in mobile view */-->
+        Handmade with
+        <svg preserveAspectRatio="xMidYMid meet" style="height: 0.8rem;" viewBox="0 0 1792 1792"
+             xmlns="http://www.w3.org/2000/svg">
+            <path d="M896 1664q-26 0-44-18l-624-602q-10-8-27.5-26T145 952.5 77 855 23.5 734 0 596q0-220 127-344t351-124q62 0 126.5 21.5t120 58T820 276t76 68q36-36 76-68t95.5-68.5 120-58T1314 128q224 0 351 124t127 344q0 221-229 450l-623 600q-18 18-44 18z"
+                  fill="#e25555"></path>
+        </svg>
+        in Germany
+        <br/>
+        &copy; 2020-<span th:text="${#dates.format(#execInfo.now.time, 'yyyy')}"></span>
+        <span th:text="#{footer.time(${time})}"
+              th:with="time=${#dates.format(#execInfo.now.time, 'yyyy-MM-dd HH:mm:ss')}"></span>
+        | <a target="_blank" th:href="#{footer.agb.link}"><span th:text="#{footer.agb.txt}"></span></a>
+        <span sec:authorize="isAuthenticated()">
+            | <span th:text="#{footer.loggedInAs(${#authentication.name})}"></span>
+             | <span class="badge" id="footerroles" th:each="role : ${#authentication.getAuthorities()}">
+                <span th:switch="${role.toString()}">
+                    <i aria-hidden="true" class="fa fa-circle border-dark rounded-circle border"
+                       style="color:darkgreen;" th:case="ROLE_USER"></i>
+                    <i aria-hidden="true" class="fa fa-circle border-dark rounded-circle border" style="color:yellow;"
+                       th:case="ROLE_ADMIN"></i>
+                    <i aria-hidden="true" class="fa fa-circle border-dark rounded-circle border"
+                       style="color:firebrick;" th:case="ROLE_TENANT_ADMIN"></i>
+                </span>
+                </span>
+    </span>
+    </div>
+</footer>
+</body>
+</html>
+
+

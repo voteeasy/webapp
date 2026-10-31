@@ -1,0 +1,51 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title th:text="#{title.main}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar.html :: nav}"></nav>
+
+<div class="container">
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="bg-light p-5 rounded">
+        <h1><i class="fas fa-ban" style="color:red;"></i> <span th:text="#{error.noDoubleVotingAllowed}"></span></h1>
+
+        <div th:if="${vote != null}">
+            <h2 th:text="#{vote.headline.myVote(${#authentication.name})}"></h2>
+            <div class="table-responsive-md">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th th:text="#{headers.name}"></th>
+                        <th th:text="#{headers.selectedOptions}"></th>
+                        <th th:text="#{headers.createdAt}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${vote.proposal.name}"></td>
+                        <td>
+                            <ol style="list-style-type:none;">
+                                <li th:each="option : ${vote.chosenOptions}" th:text="${option.name}"></li>
+                            </ol>
+                        </td>
+                        <td th:text="${#dates.format(vote.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

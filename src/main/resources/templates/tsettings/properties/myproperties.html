@@ -1,0 +1,51 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.tenantproperties}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container" sec:authorize="hasRole('ADMIN')">
+    <h1 th:text="#{menu.tenantadmin.properties}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+    <h3 th:text="#{properties.overview}"></h3>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.name}"></th>
+                <th th:text="#{headers.value}"></th>
+                <th th:text="#{headers.scope}"></th>
+                <th th:text="#{headers.type}"></th>
+                <th th:text="#{headers.createdAt}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${properties.isEmpty()}">
+                <td colspan="5" th:text="#{properties.noproperties}"></td>
+            </tr>
+            <tr th:data-cy="${property.key}" th:each="property: ${properties}" th:unless="${properties.isEmpty()}">
+                <td th:text="${property.key}"></td>
+                <td th:text="${property.value}"></td>
+                <td><span th:text="#{'property.scope.'+ ${property.scope}}"></span></td>
+                <td><span th:text="#{'property.type.'+ ${property.type}}"></span></td>
+                <td><span th:text="${#dates.format(property.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>, <span
+                        th:text="${property.tenant?.name}"></span>, <span
+                        th:text="${property.createdBy?.userName}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+</body>
+</html>

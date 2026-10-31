@@ -1,0 +1,158 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.tenants}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{menu.tenantadmin}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li sec:authorize="hasRole('TENANT_ADMIN')"><a th:href="@{/settings/tenant/add}"> <i
+                class="fas fa-user-plus ml-2"></i> <span
+                th:text="#{tenants.new}"></span></a></li>
+        <li sec:authorize="hasRole('TENANT_ADMIN')"><a th:href="@{/tsettings/properties/keys}"> <i
+                class="fas fa-key ml-2"></i> <span
+                th:text="#{menu.tenantadmin.keys}"></span></a></li>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+        <li sec:authorize="hasRole('TENANT_ADMIN')"><a th:href="@{/settings/tenant/export}">
+            <button class="btn btn-primary"><i class="fas fa-file-csv"></i> <span
+                    th:text="#{tokens.exportcsv}"></span></button>
+        </a></li>
+    </ul>
+    <h3 th:text="#{tenants.overview}"></h3>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.status}"></th>
+                <th th:text="#{headers.name}"></th>
+                <th th:text="#{headers.createdAt}"></th>
+                <th th:text="#{headers.commands}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${tenants.isEmpty()}">
+                <td colspan="3" th:text="#{tenants.notenants}"></td>
+            </tr>
+            <tr th:data-cy="${tenant.name}" th:each="tenant: ${tenants}" th:unless="${tenants.isEmpty()}">
+                <td>
+                    <form action="#"
+                          method="post"
+                          th:action="@{/settings/tenant/toggle/{tenantId}(tenantId=${tenant.id})}">
+                        <button class="btn btn-outline-secondary border-0">
+                            <i class="fas fa-toggle-on fa-3x text-success" th:if="${tenant.enabled}"></i>
+                            <i class="fas fa-toggle-on fa-3x text-danger" th:unless="${tenant.enabled}"></i>
+                        </button>
+                    </form>
+                </td>
+                <td th:text="${tenant.name}"></td>
+                <td th:text="${#dates.format(tenant.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <div class="pt-1">
+                        <form action="#"
+                              method="get"
+                              th:action="@{/tsettings/properties/{tenantId}(tenantId=${tenant.id})}">
+                            <button class="btn btn-outline-info">
+                                <i class="fas fa-list ml-2"></i>
+                                <span th:text="#{menu.tenantadmin.settings}"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="pt-1">
+                        <form action="#"
+                              method="get"
+                              th:action="@{/tsettings/properties/add/{tenantId}(tenantId=${tenant.id})}">
+                            <button class="btn btn-outline-success">
+                                <i class="fas fa-user-plus ml-2"></i>
+                                <span th:text="#{settings.new}"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="pt-1">
+                        <form action="#"
+                              method="get"
+                              th:action="@{/admin/cardinality/{tenantId}(tenantId=${tenant.id})}">
+                            <button class="btn btn-outline-dark">
+                                <i class="fas fa-table ml-2"></i>
+                                <span th:text="#{menu.admin.cardinality}"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="pt-1">
+                        <form action="#"
+                              method="post"
+                              th:action="@{/settings/tenant/toggle/{tenantId}(tenantId=${tenant.id})}">
+                            <button class="btn btn-outline-primary" data-cy="toggle">
+                                <i class="fas fa-toggle-on ml-2"></i>
+                                <span th:if="${tenant.enabled}"
+                                      th:text="#{tenants.toggle.off}"></span>
+                                <span th:text="#{tenants.toggle.on}"
+                                      th:unless="${tenant.enabled}"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="pt-1">
+                        <button class="btn btn-outline-danger" data-toggle="modal"
+                                th:data-target="'#staticBackdrop-'+${tenant.id}">
+                            <i class="fa fa-trash-alt ml-2"></i> <span th:text="#{tenants.delete}"></span>
+                        </button>
+
+                        <form action="#" method="post"
+                              th:action="@{/settings/tenant/delete/{tenantId}(tenantId=${tenant.id})}"
+                              th:id="'del-form-'+${tenant.id}">
+                        </form>
+
+                        <div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade"
+                             data-backdrop="static"
+                             data-keyboard="false" tabindex="-1" th:id="'staticBackdrop-'+${tenant.id}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel" th:text="#{modal.title}"></h5>
+                                        <button class="close" data-dismiss="modal" th:aria-label="#{modal.close}"
+                                                type="button">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" th:text="#{tenants.delete.modal(${tenant.name})}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-dismiss="modal"
+                                                th:text="#{tenants.delete.modal.no}"
+                                                type="button"></button>
+                                        <button class="btn btn-primary"
+                                                onclick="hitSubmit(this.getAttribute('data-id'))"
+                                                th:data-id="${tenant.id}"
+                                                th:text="#{tenants.delete.modal.yes}" type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+<script>
+    function hitSubmit(targetId) {
+        event.preventDefault();
+        document.getElementById("del-form-" + targetId).submit();
+    }
+</script>
+</body>
+</html>

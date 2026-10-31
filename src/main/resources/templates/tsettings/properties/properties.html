@@ -1,0 +1,98 @@
+<!doctype html>
+<html class="notranslate" th:lang="${#locale.language}" translate="no"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.tenantproperties}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container" sec:authorize="hasRole('TENANT_ADMIN')">
+    <h1 th:text="#{menu.tenantadmin.properties}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+    <h3 th:text="#{properties.overview}"></h3>
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.key}"></th>
+                <th th:text="#{headers.value}"></th>
+                <th th:text="#{headers.type}"></th>
+                <th th:text="#{headers.scope}"></th>
+                <th th:text="#{headers.createdAt}"></th>
+                <th th:text="#{headers.commands}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${properties.isEmpty()}">
+                <td colspan="6" th:text="#{properties.noproperties}"></td>
+            </tr>
+            <tr th:data-cy="${property.key}" th:each="property: ${properties}" th:unless="${properties.isEmpty()}">
+                <td th:text="${property.key}"></td>
+                <td th:text="${property.value}"></td>
+                <td><span th:text="#{'property.type.'+ ${property.type}}"></span></td>
+                <td><span th:text="#{'property.scope.'+ ${property.scope}}"></span></td>
+                <td><span th:text="${#dates.format(property.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>, <span
+                        th:text="${property.tenant?.name}"></span>, <span
+                        th:text="${property.createdBy?.userName}"></span></td>
+                <td>
+                    <div class="pt-1">
+                        <button class="btn btn-danger" data-toggle="modal"
+                                th:data-target="'#staticBackdrop-'+${property.id}">
+                            <i class="fa fa-trash-alt ml-2"></i> <span th:text="#{properties.delete}"></span>
+                        </button>
+
+                        <form action="#" method="post"
+                              th:action="@{/tsettings/properties/delete/{tenantId}/{propertyId}(tenantId=${property.tenant.id}, propertyId=${property.id})}"
+                              th:id="'del-form-'+${property.id}">
+                        </form>
+
+                        <div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade"
+                             data-backdrop="static"
+                             data-keyboard="false" tabindex="-1" th:id="'staticBackdrop-'+${property.id}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel" th:text="#{modal.title}"></h5>
+                                        <button class="close" data-dismiss="modal" th:aria-label="#{modal.close}"
+                                                type="button">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" th:text="#{properties.delete.modal(${property.key})}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-dismiss="modal"
+                                                th:text="#{tenants.delete.modal.no}"
+                                                type="button"></button>
+                                        <button class="btn btn-primary"
+                                                onclick="hitSubmit(this.getAttribute('data-id'))"
+                                                th:data-id="${property.id}"
+                                                th:text="#{tenants.delete.modal.yes}" type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+<script>
+    function hitSubmit(targetId) {
+        event.preventDefault();
+        document.getElementById("del-form-" + targetId).submit();
+    }
+</script>
+</body>
+</html>

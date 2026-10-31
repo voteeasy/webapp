@@ -1,0 +1,100 @@
+<!doctype html>
+<html th:lang="${#locale.language}"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title th:text="#{title.main}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar.html :: nav}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+    </ul>
+
+    <div class="bg-light p-5 rounded" th:if="${proposal!=null}">
+        <h2 th:text="#{vote.headline.byId(${proposal?.name})}"></h2>
+        <div class="table-responsive-md table-hover">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th th:text="#{headers.createdAt}"></th>
+                    <th th:text="#{headers.votedBy}"></th>
+                    <th th:text="#{headers.selectedOptions}"></th>
+                    <th th:text="#{headers.name}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${votes.isEmpty()}">
+                    <td colspan="3" th:text="#{votes.novotes}"></td>
+                </tr>
+                <tr th:each="vote: ${votes}" th:unless="${votes.isEmpty()}">
+                    <td th:text="${#dates.format(vote.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:if="${vote.getVoter() != null}">
+                        <span th:if="${vote.voter.fullName == null || vote.voter.fullName == 'n/a'}"
+                              th:text="${vote.voter.userName}"></span>
+                        <span th:text="${vote.voter.fullName}"
+                              th:unless="${vote.voter.fullName == null || vote.voter.fullName == 'n/a'}"></span>
+                    </td>
+                    <td th:unless="${vote.getVoter() != null}"><i class="fas fa-lock fa-3x"></i></td>
+                    <td>
+                        <ol style="list-style-type:none;">
+                            <li th:each="option : ${vote.chosenOptions}" th:text="${option.name}"></li>
+                        </ol>
+                    </td>
+                    <td><span
+                            th:text="${vote.proposal?.getGathering()?.getName()}"></span>
+                    </td>
+                </tr>
+                <tr class="table-secondary">
+                    <td th:text="#{headers.total}"></td>
+                    <td colspan="4" th:text="${votes.size()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex align-items-center">
+            <div aria-hidden="true" class="spinner-border ml-auto" role="status"></div>
+            <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+
+<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+    google.charts.load("current", {packages: ["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    let i18nTitle = '[[#{headers.selectedOptions}]]';
+    i18nTitle = i18nTitle.slice(1, -1);
+
+    function drawChart() {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Option');
+        data.addColumn('number', '#counts');
+        data.addRows([            /*[# th:each="row : ${voteChartMap}"]*/
+            [[${row}]],            /*[/]*/
+        ]);
+        const options = {
+            title: i18nTitle,
+            is3D: true,
+            pieSliceText: 'value',
+            tooltip: {text: 'value'},
+            sliceVisibilityThreshold: 0,
+        };
+
+        const chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        chart.draw(data, options);
+    }
+
+    $(document).ready(function () {
+        $('.spinner-border').hide();
+    });
+</script>
+</body>
+</html>

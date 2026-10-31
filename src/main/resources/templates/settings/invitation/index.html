@@ -1,0 +1,231 @@
+<!doctype html>
+<!--suppress JSUnusedGlobalSymbols -->
+<html th:lang="${#locale.language}" class="notranslate" translate="no" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="#{title.tokens}"></title>
+    <link th:replace="~{fragments/headCss :: link}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: nav}"></nav>
+<div class="container">
+    <h1 th:text="#{menu.token}"></h1>
+    <div th:replace="~{fragments/flashmessage :: flashmessage}"></div>
+    <ul>
+        <li><a th:replace="~{fragments/historyBack}"></a></li>
+        <li><a th:href="@{/settings/invitation/export}">
+            <button class="btn btn-primary"><i class="fas fa-file-csv"></i> <span
+                    th:text="#{tokens.exportcsv}"></span></button>
+        </a></li>
+        <li class="pt-1"><a th:href="@{/settings/invitation/exportXLS}">
+            <button class="btn btn-dark"><i class="fas fa-file-excel"></i> <span
+                    th:text="#{tokens.exportxls}"></span></button>
+        </a></li>
+        <li sec:authorize="hasRole('TENANT_ADMIN')">
+            <form action="#"
+                  method="get"
+                  th:action="@{/settings/invitation/create}">
+                <button class="btn btn-info">
+                    <i class="fas fa-user-plus ml-2"></i> <span
+                        th:text="#{tokens.generate}"></span>
+                </button>
+            </form>
+        </li>
+    </ul>
+    <h3 th:text="#{tokens.overview}"></h3>
+    <div th:text="#{tokens.stats(${openCount}, ${redeemedCount}, ${disabledCount})}"></div>
+
+    <div class="table-responsive-md table-hover">
+        <table class="table">
+            <thead>
+            <tr>
+                <th th:text="#{headers.status}"></th>
+                <th th:text="#{headers.token}"></th>
+                <th th:text="#{headers.createdAt}"></th>
+                <th th:text="#{headers.redeemedAt}"></th>
+                <th th:text="#{headers.commands}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${tokens.isEmpty()}">
+                <td colspan="3" th:text="#{tokens.notokens}"></td>
+            </tr>
+            <tr th:each="token: ${tokens}" th:unless="${tokens.isEmpty()}">
+                <td th:if="${token.redeemedAt == null}">
+                    <form action="#"
+                          method="post"
+                          th:action="@{/settings/invitation/toggle/{tokenId}(tokenId=${token.id})}">
+                        <button class="btn btn-outline-secondary border-0">
+                            <i class="fas fa-toggle-on fa-3x text-success" th:if="${token.enabled}"></i>
+                            <i class="fas fa-toggle-on fa-3x text-danger" th:unless="${token.enabled}"></i>
+                        </button>
+                    </form>
+                </td>
+                <td th:unless="${token.redeemedAt == null}">
+                    <button class="btn btn-outline-secondary border-0">
+                        <i class="fas fa-toggle-on fa-3x text-muted"></i>
+                    </button>
+                </td>
+                <td>
+                    <span data-cy='tkn' th:id="${token.token}" th:text="${token.token}"></span>
+                    <div>
+                        <button class="btn btn-light"
+                                data-placement="bottom"
+                                th:attr="onclick='javascript:copyToClipboard(\'' + ${token.token}+  '\');'"
+                                th:id="${'c-t-'+token.token}"
+                                type="button"><i
+                                class="fas fa-clipboard"></i> <span th:text="#{menu.toclipboard}"></span>
+                        </button>
+                    </div>
+                </td>
+                <td th:text="${#dates.format(token.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(token.redeemedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:if="${token.redeemedAt == null}">
+                    <div class="pt-1">
+                        <button class="btn btn-danger" data-toggle="modal"
+                                th:data-target="'#staticBackdrop-'+${token.id}">
+                            <i class="fa fa-trash-alt ml-2"></i> <span th:text="#{tokens.delete}"></span>
+                        </button>
+                    </div>
+
+                    <div class="pt-1">
+                        <form action="#" method="post"
+                              th:action="@{/settings/invitation/delete/{tokenId}(tokenId=${token.id})}"
+                              th:id="'del-form-'+${token.id}">
+                        </form>
+                    </div>
+
+                    <div aria-hidden="true" th:aria-labelledby="'staticBackdropLabel-'+${token.id}" class="modal fade"
+                         data-backdrop="static"
+                         data-keyboard="false" tabindex="-1" th:id="'staticBackdrop-'+${token.id}">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" th:id="'staticBackdropLabel-'+${token.id}" th:text="#{modal.title}"></h5>
+                                    <button class="close" data-dismiss="modal" th:aria-label="#{modal.close}"
+                                            type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" th:text="#{tokens.delete.modal(${token.token})}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal"
+                                            th:text="#{tenants.delete.modal.no}"
+                                            type="button"></button>
+                                    <button class="btn btn-primary"
+                                            onclick="hitSubmit(this.getAttribute('data-id'))"
+                                            th:data-id="${token.id}"
+                                            th:text="#{tenants.delete.modal.yes}" type="button"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <form action="#"
+                              method="post"
+                              th:action="@{/settings/invitation/toggle/{tokenId}(tokenId=${token.id})}">
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-toggle-on ml-2"></i>
+                                <span th:if="${token.enabled}"
+                                      th:text="#{tokens.toggle.off}"></span>
+                                <span th:text="#{tokens.toggle.on}"
+                                      th:unless="${token.enabled}"></span>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+                <td th:unless="${token.redeemedAt == null}">
+                    <div class="pt-1">
+                        <button class="btn btn-danger" data-toggle="modal"
+                                th:data-target="'#staticBackdrop-'+${token.id}">
+                            <i class="fa fa-trash-alt ml-2"></i> <span th:text="#{tokens.delete}"></span>
+                        </button>
+
+                        <form action="#" method="post"
+                              th:action="@{/settings/invitation/delete/{tokenId}(tokenId=${token.id})}"
+                              th:id="'del-form-'+${token.id}">
+                        </form>
+
+                        <div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade"
+                             data-backdrop="static"
+                             data-keyboard="false" tabindex="-1" th:id="'staticBackdrop-'+${token.id}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel" th:text="#{modal.title}"></h5>
+                                        <button class="close" data-dismiss="modal" th:aria-label="#{modal.close}"
+                                                type="button">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" th:text="#{tokens.delete.modal(${token.token})}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-dismiss="modal"
+                                                th:text="#{tenants.delete.modal.no}"
+                                                type="button"></button>
+                                        <button class="btn btn-primary"
+                                                onclick="hitSubmit(this.getAttribute('data-id'))"
+                                                th:data-id="${token.id}"
+                                                th:text="#{tenants.delete.modal.yes}" type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/loadJs :: script}"></script>
+<!--/*
+20210323: we cannot extract this into an external JS file as i18n does not work in that file.
+If the script is inserted into this HTML file the Thymeleaf filtering mechanism is working properly
+*/-->
+<script>
+    function hitSubmit(targetId) {
+        event.preventDefault();
+        document.getElementById("del-form-" + targetId).submit();
+    }
+
+    function setTooltip(message, selector) {
+        $(selector).tooltip('hide')
+            .attr('data-original-title', message)
+            .tooltip('show');
+    }
+
+    function hideTooltip(selector) {
+        setTimeout(function () {
+            let element = $(selector);
+            element.tooltip('hide');
+            element.tooltip('disable');
+        }, 1000);
+    }
+
+    let i18nCopied = '[[#{tokens.copiedtoclipboard}]]';
+
+    function copyToClipboard(dataTargetId) {
+        let elemCt = $('[id="c-t-' + dataTargetId + '"]');
+        elemCt.tooltip();
+        elemCt.tooltip('enable');
+
+        let copyText = document.getElementById(dataTargetId);
+        let textArea = document.createElement("textarea");
+        textArea.value = copyText.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("Copy");
+        textArea.remove();
+
+        setTooltip(i18nCopied, '#c-t-' + dataTargetId);
+        hideTooltip('#c-t-' + dataTargetId);
+    }
+</script>
+</body>
+</html>
