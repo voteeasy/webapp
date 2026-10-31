@@ -48,7 +48,7 @@ public class TenantController {
 
         model.addAttribute("tenants", tenantService.list());
 
-        return new ModelAndView("/settings/tenant/index.html");
+        return new ModelAndView("settings/tenant/index.html");
     }
 
     @GetMapping("/overdue")
@@ -61,7 +61,7 @@ public class TenantController {
 
         model.addAttribute("tenants", tenantService.listOverdue());
 
-        return new ModelAndView("/settings/tenant/overdue.html");
+        return new ModelAndView("settings/tenant/overdue.html");
     }
 
     @GetMapping("/export")
@@ -78,18 +78,18 @@ public class TenantController {
         }
 
         model.addAttribute("tenant", CreateTenantForm.builder().build());
-        return new ModelAndView("/settings/tenant/add.html");
+        return new ModelAndView("settings/tenant/add.html");
     }
 
     @PostMapping("/add")
     public ModelAndView createTenant(@Valid @ModelAttribute("tenant") final CreateTenantForm form, final BindingResult result, final RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return new ModelAndView("/settings/tenant/add");
+            return new ModelAndView("settings/tenant/add");
         } else {
             final ServiceResult serviceResult = tenantService.createTenant(form);
             if (HttpStatus.FORBIDDEN.equals(serviceResult.getStatus())) {
                 result.addError(new FieldError("tenant", "name", serviceResult.getMessageKey()));
-                return new ModelAndView("/settings/tenant/add");
+                return new ModelAndView("settings/tenant/add");
             }
 
             log.info("Creating new tenant was {}", serviceResult.getStatus().name());

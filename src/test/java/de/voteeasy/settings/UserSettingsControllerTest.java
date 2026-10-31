@@ -78,7 +78,7 @@ class UserSettingsControllerTest extends AbstractIT {
     @Test
     @WithMockUser
     void postChangeNameValidatesGivenInput() throws Exception {
-        mvc.perform(post("/settings/changeName").with(csrf())).andExpect(status().isOk()).andExpect(view().name("/settings/changeName"));
+        mvc.perform(post("/settings/changeName").with(csrf())).andExpect(status().isOk()).andExpect(view().name("settings/changeName"));
     }
 
     @Test
@@ -95,7 +95,7 @@ class UserSettingsControllerTest extends AbstractIT {
                 // is a global validation error that is not checkable on the model
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().hasErrors())
-                .andExpect(view().name("/settings/changePassword"));
+                .andExpect(view().name("settings/changePassword"));
     }
 
     @Test
@@ -111,7 +111,7 @@ class UserSettingsControllerTest extends AbstractIT {
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrors("account", "password", "passwordAgain"))
-                .andExpect(view().name("/settings/changePassword"));
+                .andExpect(view().name("settings/changePassword"));
     }
 
     @Test

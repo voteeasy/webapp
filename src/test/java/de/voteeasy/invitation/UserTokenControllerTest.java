@@ -100,7 +100,7 @@ class UserTokenControllerTest extends AbstractIT {
 
         mvc.perform(get("/settings/invitation/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/settings/invitation/index.html"))
+                .andExpect(view().name("settings/invitation/index.html"))
                 .andExpect(model().attributeExists("tokens", "redeemedCount", "openCount", "disabledCount"))
         ;
     }
@@ -116,7 +116,7 @@ class UserTokenControllerTest extends AbstractIT {
 
         mvc.perform(get("/settings/invitation/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/settings/invitation/index.html"))
+                .andExpect(view().name("settings/invitation/index.html"))
                 .andExpect(model().attributeExists("tokens", "redeemedCount", "openCount", "disabledCount"))
         ;
     }

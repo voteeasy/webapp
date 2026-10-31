@@ -36,21 +36,21 @@ public class SettingController {
     @GetMapping("/")
     public ModelAndView showMyProperties(Model model) {
         model.addAttribute("properties", settingService.getMySettings());
-        return new ModelAndView("/tsettings/properties/myproperties.html");
+        return new ModelAndView("tsettings/properties/myproperties.html");
     }
 
     @PreAuthorize("hasRole('ROLE_TENANT_ADMIN')")
     @GetMapping("/{tenantId}")
     public ModelAndView showPropertiesByTenantId(@PathVariable("tenantId") UUID id, Model model) {
         model.addAttribute("properties", settingService.getSettings(id));
-        return new ModelAndView("/tsettings/properties/properties.html");
+        return new ModelAndView("tsettings/properties/properties.html");
     }
 
     @PreAuthorize("hasRole('ROLE_TENANT_ADMIN')")
     @GetMapping("/keys")
     public ModelAndView showAvailableKeys(Model model) {
         model.addAttribute("keys", settingService.getAllKeys(SettingScope.TENANT));
-        return new ModelAndView("/tsettings/properties/keys.html");
+        return new ModelAndView("tsettings/properties/keys.html");
     }
 
     @PreAuthorize("hasRole('ROLE_TENANT_ADMIN')")
@@ -65,7 +65,7 @@ public class SettingController {
         Tenant t = tenant.get();
         SettingPropertyForm form = SettingPropertyForm.builder().userId(user.get().getId()).tenantId(t.getId()).tenantName(t.getName()).build();
         model.addAttribute("setting", form);
-        return new ModelAndView("/tsettings/properties/property-add.html");
+        return new ModelAndView("tsettings/properties/property-add.html");
     }
 
     @PreAuthorize("hasRole('ROLE_TENANT_ADMIN')")
@@ -73,7 +73,7 @@ public class SettingController {
     public ModelAndView submitAddSettingForm(final Model model, @PathVariable("targetTenantId") final UUID id, @Valid @ModelAttribute("setting") final SettingPropertyForm form, final BindingResult result, RedirectAttributes redirectAttributes) {
         final Optional<Tenant> tenant = settingService.getTenantDetails(id);
         if (result.hasErrors() || tenant.isEmpty()) {
-            return new ModelAndView("/tsettings/properties/property-add.html");
+            return new ModelAndView("tsettings/properties/property-add.html");
         } else {
             final ServiceResult serviceResult = settingService.addProperty(form, tenant.get());
             log.info("Adding settings property for tenant {} was {}", tenant.get().getId(), serviceResult.getStatus().name());

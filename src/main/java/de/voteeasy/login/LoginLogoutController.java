@@ -12,7 +12,7 @@ public class LoginLogoutController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping("/")
     public ModelAndView showAppWelcomePage() {
-        return new ModelAndView("/app/index.html");
+        return new ModelAndView("app/index.html");
     }
 
     @RequestMapping("/login")

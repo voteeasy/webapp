@@ -28,6 +28,6 @@ public class VoteResultController {
     @GetMapping("/{gatheringId}")
     public ModelAndView showResultsForGathering(@NotNull @PathVariable UUID gatheringId, ModelMap model) {
         model.addAttribute("voteResult", voteResultService.aggregateResult(gatheringId));
-        return new ModelAndView("/results/index.html", model);
+        return new ModelAndView("results/index.html", model);
     }
 }

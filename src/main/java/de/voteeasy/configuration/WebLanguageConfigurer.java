@@ -3,7 +3,6 @@ package de.voteeasy.configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -34,12 +33,11 @@ public class WebLanguageConfigurer implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
-/* does not fallback/show i18n keys from voteeasy.messages, but de and ru seem to work
-        CookieLocaleResolver resolver = new CookieLocaleResolver();
-        resolver.setDefaultLocale(Locale.ENGLISH);
+        OnlyHardcodedLanguages resolver = new OnlyHardcodedLanguages();
+        // Security redirects and logout can discard the lang parameter/session.
+        // Use the same default on the host and in Docker; lang=en still overrides it.
+        resolver.setDefaultLocale(Locale.GERMAN);
         return resolver;
- */
-        return new OnlyHardcodedLanguages();
     }
 
     @Slf4j
@@ -48,9 +46,6 @@ public class WebLanguageConfigurer implements WebMvcConfigurer {
 
         @Override
         public Locale resolveLocale(@NonNull HttpServletRequest request) {
-            // 20201231: en is selected properly but loaded contents is NOT English
-            LocaleContextHolder.setDefaultLocale(Locale.ENGLISH);
-
             Locale locale = super.resolveLocale(request);
             log.debug("Language seen: {}", locale);
             if (!allowedLocales.contains(locale)) {
@@ -63,13 +58,4 @@ public class WebLanguageConfigurer implements WebMvcConfigurer {
         }
     }
 
-    //different way: set the default locale to de via session
-/*
-    @Bean
-    public LocaleResolver sessionLocalResolver() {
-        SessionLocaleResolver resolver = new SessionLocaleResolver();
-        resolver.setDefaultLocale(Locale.GERMAN);
-        return resolver;
-    }
- */
 }

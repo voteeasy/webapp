@@ -63,7 +63,7 @@ class SettingControllerTest extends AbstractIT {
 
         mvc.perform(get("/tsettings/properties/").with(csrf())
         ).andExpect(status().isOk()
-        ).andExpect(view().name("/tsettings/properties/myproperties.html")
+        ).andExpect(view().name("tsettings/properties/myproperties.html")
         ).andExpect(model().attributeExists("properties")
         ).andExpect(model().attribute("properties", mySettings)
         );
@@ -77,7 +77,7 @@ class SettingControllerTest extends AbstractIT {
 
         mvc.perform(get("/tsettings/properties/").with(csrf())
         ).andExpect(status().isOk()
-        ).andExpect(view().name("/tsettings/properties/myproperties.html")
+        ).andExpect(view().name("tsettings/properties/myproperties.html")
         ).andExpect(model().attributeExists("properties")
         ).andExpect(model().attribute("properties", mySettings)
         );
@@ -99,7 +99,7 @@ class SettingControllerTest extends AbstractIT {
 
         mvc.perform(get("/tsettings/properties/" + tenantId).with(csrf())
         ).andExpect(status().isOk()
-        ).andExpect(view().name("/tsettings/properties/properties.html")
+        ).andExpect(view().name("tsettings/properties/properties.html")
         ).andExpect(model().attribute("properties", properties)
         );
     }
@@ -118,7 +118,7 @@ class SettingControllerTest extends AbstractIT {
 
         mvc.perform(get("/tsettings/properties/keys").with(csrf())
         ).andExpect(status().isOk()
-        ).andExpect(view().name("/tsettings/properties/keys.html")
+        ).andExpect(view().name("tsettings/properties/keys.html")
         ).andExpect(model().attribute("keys", keys)
         );
     }
@@ -146,7 +146,7 @@ class SettingControllerTest extends AbstractIT {
 
         mvc.perform(get("/tsettings/properties/add/" + tenantId).with(csrf())
         ).andExpect(status().isOk()
-        ).andExpect(view().name("/tsettings/properties/property-add.html")
+        ).andExpect(view().name("tsettings/properties/property-add.html")
         ).andExpect(model().attributeExists("setting")
         );
     }

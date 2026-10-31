@@ -45,7 +45,7 @@ class UserSettingsControllerUTest {
 
         final var result = userSettingsController.changePassword(model);
         assertThat(result).isNotNull();
-        assertThat(result.getViewName()).isEqualTo("/settings/changePassword.html");
+        assertThat(result.getViewName()).isEqualTo("settings/changePassword.html");
         verify(model).addAttribute(eq("account"), eq(form));
     }
 
@@ -72,7 +72,7 @@ class UserSettingsControllerUTest {
 
         final var result = userSettingsController.showChangeNameForm(model);
         assertThat(result).isNotNull();
-        assertThat(result.getViewName()).isEqualTo("/settings/changeName.html");
+        assertThat(result.getViewName()).isEqualTo("settings/changeName.html");
         verify(model).addAttribute(eq("account"), eq(form));
     }
 

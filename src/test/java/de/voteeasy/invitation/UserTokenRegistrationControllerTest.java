@@ -50,7 +50,7 @@ class UserTokenRegistrationControllerTest extends AbstractIT {
                 .param("password", "p12345")
                 .param("passwordAgain", "p12345")
         ).andExpect(status().isOk())
-                .andExpect(view().name("/register.html"))
+                .andExpect(view().name("register.html"))
                 .andExpect(model().attributeHasFieldErrorCode("register", "token", "NotEmpty"))
                 .andExpect(model().attributeExists("register"));
         verifyNoInteractions(registerByUserTokenService);

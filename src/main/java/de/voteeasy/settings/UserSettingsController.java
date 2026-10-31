@@ -47,13 +47,13 @@ public class UserSettingsController {
         final ChangeNameForm form = ChangeNameForm.builder().userId(u.getId()).fullName(u.getFullName()).userName(u.getUserName()).build();
         model.addAttribute("account", form);
 
-        return new ModelAndView("/settings/changeName.html");
+        return new ModelAndView("settings/changeName.html");
     }
 
     @PostMapping("/changeName")
     public ModelAndView changeName(@Valid @ModelAttribute("account") final ChangeNameForm form, final BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return new ModelAndView("/settings/changeName");
+            return new ModelAndView("settings/changeName");
         } else {
             final ServiceResult serviceResult = userService.updateUserWithSecurityCheck(form);
             log.info("Changing display name was {}", serviceResult.getStatus().name());
@@ -74,13 +74,13 @@ public class UserSettingsController {
         final ChangePasswordForm form = ChangePasswordForm.builder().userId(u.getId()).fullName(u.getFullName()).userName(u.getUserName().trim()).build();
         model.addAttribute("account", form);
 
-        return new ModelAndView("/settings/changePassword.html");
+        return new ModelAndView("settings/changePassword.html");
     }
 
     @PostMapping("/changePassword")
     public ModelAndView changePassword(@Valid @ModelAttribute("account") final ChangePasswordForm form, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return new ModelAndView("/settings/changePassword");
+            return new ModelAndView("settings/changePassword");
         } else {
             final ServiceResult serviceResult = userService.updateUserWithSecurityCheck(form);
             log.info("Changing password for user was {}", serviceResult.getStatus().name());

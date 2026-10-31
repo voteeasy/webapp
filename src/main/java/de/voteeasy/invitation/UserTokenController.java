@@ -67,7 +67,7 @@ public class UserTokenController {
         model.addAttribute("openCount", userTokenService.getOpenTokenCount());
         model.addAttribute("disabledCount", userTokenService.getDisabledTokenCount());
 
-        return new ModelAndView("/settings/invitation/index.html");
+        return new ModelAndView("settings/invitation/index.html");
     }
 
     @GetMapping("/export")

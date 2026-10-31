@@ -35,7 +35,7 @@ public class UserTokenRegistrationController {
     @PostMapping("/register")
     public ModelAndView processRegisterForm(@Valid @ModelAttribute("register") final RegisterByUserTokenForm form, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return new ModelAndView("/register.html");
+            return new ModelAndView("register.html");
         }
 
         final ServiceResult serviceResult = registerByUserTokenService.redeemToken(form);

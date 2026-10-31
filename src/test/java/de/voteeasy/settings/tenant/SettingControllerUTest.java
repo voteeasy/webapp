@@ -73,7 +73,7 @@ class SettingControllerUTest {
         final Model realModel = new ExtendedModelMap();
         final ModelAndView result = settingController.showAddSettingForm(realModel, tenantId);
         assertThat(result).isNotNull();
-        assertThat(result.getViewName()).isEqualTo("/tsettings/properties/property-add.html");
+        assertThat(result.getViewName()).isEqualTo("tsettings/properties/property-add.html");
 
         assertThat(realModel.containsAttribute("setting")).isTrue();
         // make sure all parameters are propely put into the settingsForm
@@ -97,7 +97,7 @@ class SettingControllerUTest {
         when(settingService.getTenantDetails(any(UUID.class))).thenReturn(Optional.empty());
         final ModelAndView result = settingController.submitAddSettingForm(model, id, SettingPropertyForm.builder().build(), bindingResult, redirectAttributes);
         assertThat(result).isNotNull();
-        assertThat(result.getViewName()).isEqualTo("/tsettings/properties/property-add.html");
+        assertThat(result.getViewName()).isEqualTo("tsettings/properties/property-add.html");
     }
 
     @Test
@@ -107,7 +107,7 @@ class SettingControllerUTest {
         when(settingService.getTenantDetails(any(UUID.class))).thenReturn(Optional.of(new Tenant("submitFormWithFormValidationErrors")));
         final ModelAndView result = settingController.submitAddSettingForm(model, id, SettingPropertyForm.builder().build(), bindingResult, redirectAttributes);
         assertThat(result).isNotNull();
-        assertThat(result.getViewName()).isEqualTo("/tsettings/properties/property-add.html");
+        assertThat(result.getViewName()).isEqualTo("tsettings/properties/property-add.html");
     }
 
     @Test

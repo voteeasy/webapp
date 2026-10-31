@@ -33,7 +33,7 @@ class LoginControllerITests extends AbstractIT {
     @Test
     @WithMockUser(username = "user", roles = {"USER", "ADMIN"})
     void flashmessageIsTransmittedAndSetInTheModel() throws Exception {
-        mvc.perform(get("/app/flashmessage")).andExpect(status().isOk()).andExpect(view().name("/app/index.html"))
+        mvc.perform(get("/app/flashmessage")).andExpect(status().isOk()).andExpect(view().name("app/index.html"))
                 //.andDo(print())
                 .andExpect(model().attribute("flashmessage", equalTo("headers.commands")));
     }

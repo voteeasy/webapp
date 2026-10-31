@@ -71,7 +71,7 @@ class TenantControllerTest extends AbstractIT {
 
         mvc.perform(get("/settings/tenant/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/settings/tenant/index.html"))
+                .andExpect(view().name("settings/tenant/index.html"))
                 .andExpect(model().attribute("tenants", tenants))
         ;
     }
@@ -83,7 +83,7 @@ class TenantControllerTest extends AbstractIT {
 
         mvc.perform(get("/settings/tenant/add"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/settings/tenant/add.html"))
+                .andExpect(view().name("settings/tenant/add.html"))
                 .andExpect(model().attribute("tenant", CreateTenantForm.builder().build()))
         ;
     }
@@ -112,7 +112,7 @@ class TenantControllerTest extends AbstractIT {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrorCode("tenant", "adminPassword", "NotEmpty"))
                 .andExpect(model().attributeHasFieldErrorCode("tenant", "name", "NotEmpty"))
-                .andExpect(view().name("/settings/tenant/add"))
+                .andExpect(view().name("settings/tenant/add"))
         ;
     }
 
@@ -128,7 +128,7 @@ class TenantControllerTest extends AbstractIT {
                         .param("adminPassword", "123")
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrorCode("tenant", "adminPassword", "Size"))
-                .andExpect(view().name("/settings/tenant/add"))
+                .andExpect(view().name("settings/tenant/add"))
         ;
     }
 
@@ -144,7 +144,7 @@ class TenantControllerTest extends AbstractIT {
                         .param("adminPassword", "pwpwpw")
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("tenant", "name"))
-                .andExpect(view().name("/settings/tenant/add"))
+                .andExpect(view().name("settings/tenant/add"))
         ;
     }
 

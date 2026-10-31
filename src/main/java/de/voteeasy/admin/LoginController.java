@@ -37,7 +37,7 @@ public class LoginController {
         model.addAttribute("flashmessage", "headers.commands");
         redirectAttributes.addFlashAttribute("flashmessage", "headers.commands");
 
-        return new ModelAndView("/app/index.html", model.asMap());
+        return new ModelAndView("app/index.html", model.asMap());
     }
 
     @RequestMapping("/username")

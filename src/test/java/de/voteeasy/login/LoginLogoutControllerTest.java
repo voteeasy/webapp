@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,12 +23,39 @@ class LoginLogoutControllerTest extends AbstractIT {
     void welcomePage() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/app/index.html"));
+                .andExpect(view().name("app/index.html"));
     }
 
     @Test
     void welcomePageRedirectsToLoginIfNotAuthenticated() throws Exception {
         mvc.perform(get("/")).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("http://localhost/login"));
+    }
+
+    @Test
+    void loginAfterSecurityRedirectDefaultsToGerman() throws Exception {
+        // The security filter redirects before the MVC lang interceptor runs.
+        mvc.perform(get("/?lang=de").header("Accept-Language", "en-US,en;q=0.9"))
+                .andExpect(redirectedUrl("http://localhost/login"));
+        mvc.perform(get("/login").header("Accept-Language", "en-US,en;q=0.9"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Zurück zur Webseite")));
+    }
+
+    @Test
+    void loginMessagesWithoutLanguageParameterDefaultToGerman() throws Exception {
+        mvc.perform(get("/login?error").header("Accept-Language", "en-US,en;q=0.9"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Invalide Zugangsdaten")));
+        mvc.perform(get("/login?success").header("Accept-Language", "en-US,en;q=0.9"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Sie haben sich erfolgreich abgemeldet")));
+    }
+
+    @Test
+    void loginCanStillBeSelectedInEnglish() throws Exception {
+        mvc.perform(get("/login?lang=en"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Back to home page")));
     }
 
     @Test

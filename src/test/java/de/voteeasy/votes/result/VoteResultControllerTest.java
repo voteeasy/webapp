@@ -40,7 +40,7 @@ class VoteResultControllerTest extends AbstractIT {
     void showResultsForGathering() throws Exception {
         mvc.perform(get("http://localhost/results/" + UUID.randomUUID()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/results/index.html"))
+                .andExpect(view().name("results/index.html"))
                 .andExpect(model().attributeExists("voteResult"))
         ;
     }
