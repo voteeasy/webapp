@@ -4,13 +4,25 @@ import de.voteeasy.gathering.Gathering;
 import de.voteeasy.gathering.GatheringService;
 import de.voteeasy.user.ApplicationUserService;
 import de.voteeasy.user.User;
-import de.voteeasy.votes.*;
+import de.voteeasy.votes.Option;
+import de.voteeasy.votes.Vote;
+import de.voteeasy.votes.VoteProposal;
+import de.voteeasy.votes.VoteProposalRepository;
+import de.voteeasy.votes.VoteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service

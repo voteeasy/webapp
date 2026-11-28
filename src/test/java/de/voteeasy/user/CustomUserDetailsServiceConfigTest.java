@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import static de.voteeasy.login.LoginTenantAuthenticationFilter.toUserNameWithTenant;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -52,23 +52,24 @@ public class CustomUserDetailsServiceConfigTest {
 
     @Test
     public void notFoundIsHandled() {
-        assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername("notFound"));
+        assertThatThrownBy(() -> userDetailsService.loadUserByUsername("notFound"))
+                .isInstanceOf(UsernameNotFoundException.class);
     }
 
     @Test
     public void foundByUsernameButCorruptTenant() {
-        assertThrows(UsernameNotFoundException.class, () -> {
+        assertThatThrownBy(() -> {
             User user = User.builder().userName(USERNAME).organisation(new Tenant()).build();
             when(userRepository.getForLogin(eq(USERNAME), any())).thenReturn(Optional.of(user));
 
             userDetailsService.loadUserByUsername(toUserNameWithTenant(USERNAME, TENANTNAME));
-        });
+        }).isInstanceOf(UsernameNotFoundException.class);
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     public void foundByUserNameWithTenantButNoGrantsDefined(Collection<Role> roles) {
-        assertThrows(UsernameNotFoundException.class, () -> {
+        assertThatThrownBy(() -> {
             Tenant tenant = new Tenant(TENANTNAME);
             UUID tenantId = UUID.randomUUID();
             tenant.setId(tenantId);
@@ -76,7 +77,7 @@ public class CustomUserDetailsServiceConfigTest {
             when(userRepository.getForLogin(eq(USERNAME), eq(TENANTNAME))).thenReturn(Optional.of(user));
 
             userDetailsService.loadUserByUsername(toUserNameWithTenant(USERNAME, TENANTNAME));
-        });
+        }).isInstanceOf(UsernameNotFoundException.class);
     }
 
     @Test
@@ -111,6 +112,7 @@ public class CustomUserDetailsServiceConfigTest {
         User user = User.builder().userName(USERNAME).organisation(tenant).roles(Sets.newSet(role)).passwordHash(PASSWORD).build();
         when(userRepository.getForLogin(eq(USERNAME), eq(TENANTNAME))).thenReturn(Optional.of(user));
 
-        assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(toUserNameWithTenant(USERNAME, TENANTNAME)));
+        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(toUserNameWithTenant(USERNAME, TENANTNAME)))
+                .isInstanceOf(UsernameNotFoundException.class);
     }
 }

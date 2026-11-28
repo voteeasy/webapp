@@ -16,12 +16,18 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 class GatheringControllerTests extends AbstractIT {
     @Autowired
@@ -69,7 +75,8 @@ class GatheringControllerTests extends AbstractIT {
     @Test
     @WithMockUser(username = "user")
     void newShowsCreationFormForAdminsOnly() {
-        assertThrows(AccessDeniedException.class, () -> gatheringController.showCreationForm(new Gathering()));
+        assertThatThrownBy(() -> gatheringController.showCreationForm(new Gathering()))
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     @Test

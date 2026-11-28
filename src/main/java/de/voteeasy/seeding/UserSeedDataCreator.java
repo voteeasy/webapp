@@ -2,11 +2,19 @@ package de.voteeasy.seeding;
 
 import de.voteeasy.tenant.Tenant;
 import de.voteeasy.tenant.TenantRepository;
-import de.voteeasy.user.*;
+import de.voteeasy.user.Role;
+import de.voteeasy.user.RoleRepository;
+import de.voteeasy.user.RoleService;
+import de.voteeasy.user.User;
+import de.voteeasy.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 @Slf4j

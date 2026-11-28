@@ -8,7 +8,7 @@ import org.thymeleaf.util.StringUtils;
 
 import jakarta.validation.ConstraintViolationException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GatheringValidationTest extends AbstractIT {
 
@@ -17,12 +17,14 @@ class GatheringValidationTest extends AbstractIT {
 
     @Test
     void whenNameIsMissing_thenExceptionIsThrown() {
-        assertThrows(ConstraintViolationException.class, () -> gatheringService.saveWithTenantAndUser(new Gathering()));
+        assertThatThrownBy(() -> gatheringService.saveWithTenantAndUser(new Gathering()))
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
     void whenNameIsTooLong_thenExceptionIsThrown() {
-        assertThrows(ConstraintViolationException.class, () -> gatheringService.saveWithTenantAndUser(new Gathering(StringUtils.repeat("a", 300), new Tenant())));
+        assertThatThrownBy(() -> gatheringService.saveWithTenantAndUser(new Gathering(StringUtils.repeat("a", 300), new Tenant())))
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
 }

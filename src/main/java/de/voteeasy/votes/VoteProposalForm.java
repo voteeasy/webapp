@@ -1,7 +1,11 @@
 package de.voteeasy.votes;
 
 import de.voteeasy.votes.validation.ValidVoteProposalOptions;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

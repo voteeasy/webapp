@@ -108,7 +108,16 @@ compatibility changes. Link related entries to their pull request when its
 number is known, using the existing reference-link style (for example
 `([PR #19])`). Do not invent a PR number or URL.
 
-# Code conventions
+## Code conventions
 
-* Do not use star imports.
-* Write test assertions with assertJ.
+- Do not use star imports in application code or tests, including static imports.
+- Write test assertions with AssertJ. Use `assertThatThrownBy()` for expected
+  exceptions and `assertThatCode().doesNotThrowAnyException()` for calls that
+  must succeed. JUnit remains the test framework; MockMvc result matchers remain
+  appropriate for HTTP integration tests.
+- Keep the shared IntelliJ IDEA code style in `.idea/codeStyles/Project.xml`
+  and `.idea/codeStyles/codeStyleConfig.xml`. The project scheme uses explicit
+  normal and static imports and has no wildcard-import package exceptions.
+  Do not lower the import-on-demand thresholds or disable the project scheme.
+  Only these two IDE configuration files are versioned; personal IDE metadata
+  must remain ignored.

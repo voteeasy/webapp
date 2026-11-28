@@ -2,7 +2,12 @@
 target/
 
 # IDE metadata: IntelliJ IDEA, Eclipse, VS Code and NetBeans
-.idea/
+/.idea/*
+# Share only the project code style; keep personal IDE metadata ignored.
+!/.idea/codeStyles/
+/.idea/codeStyles/*
+!/.idea/codeStyles/Project.xml
+!/.idea/codeStyles/codeStyleConfig.xml
 *.iml
 *.ipr
 *.iws
