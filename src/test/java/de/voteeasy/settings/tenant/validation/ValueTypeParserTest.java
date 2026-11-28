@@ -7,7 +7,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static de.voteeasy.settings.tenant.validation.ValueTypeParser.*;
+import static de.voteeasy.settings.tenant.validation.ValueTypeParser.isValidAlphanumeric;
+import static de.voteeasy.settings.tenant.validation.ValueTypeParser.isValidNumber;
+import static de.voteeasy.settings.tenant.validation.ValueTypeParser.isValidUuid;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ValueTypeParserTest {

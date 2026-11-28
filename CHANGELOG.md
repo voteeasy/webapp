@@ -10,10 +10,18 @@ Entries are written in British English.
 ### Added
 
 - Introduced this changelog to document notable changes.
+- Added `AGENTS.md` with project guidance, build and test commands, data-safety
+  rules and coding conventions for coding agents ([Issue #21]).
+- Added a shared IntelliJ IDEA project code style to prevent explicit Java
+  imports from being replaced with wildcard imports during optimisation. Only
+  the two project code-style files are versioned; personal IDE settings remain
+  ignored ([PR #19]).
 
 ### Changed
 
 - Updated Apache Commons Lang from 3.20.0 to 3.22.0 ([PR #19]).
+- Replaced wildcard imports throughout the Java sources and tests with explicit
+  imports, and migrated the remaining JUnit assertions to AssertJ ([PR #19]).
 - Restricted `NUMERIC` settings to whole numbers within the Java `int` range
   (-2,147,483,648 to 2,147,483,647), matching the values read by
   `ReadSettingService`. Validation now uses a regular expression for the format
@@ -28,3 +36,4 @@ Entries are written in British English.
   behaviour and allowing values that cannot be read as integers ([PR #19]).
 
 [PR #19]: https://github.com/voteeasy/webapp/pull/19
+[Issue #21]: https://github.com/voteeasy/webapp/issues/21

@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -33,7 +33,7 @@ class TenantExportServiceTest {
 
     @Test
     void exportWithoutResponse() {
-        assertDoesNotThrow(() -> tenantExportService.export(null, new HashSet<>()));
+        assertThatCode(() -> tenantExportService.export(null, new HashSet<>())).doesNotThrowAnyException();
     }
 
     @Test
@@ -48,7 +48,7 @@ class TenantExportServiceTest {
         Tenant a = new Tenant("a");
         a.setId(UUID.randomUUID());
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        assertDoesNotThrow(() -> tenantExportService.export(response, Set.of(a)));
+        assertThatCode(() -> tenantExportService.export(response, Set.of(a))).doesNotThrowAnyException();
     }
 
     @Test

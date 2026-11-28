@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -58,7 +58,8 @@ class LoginTenantAuthenticationFilterTest {
     @Test
     void errorIfNotPostDuringLogin() {
         when(request.getMethod()).thenReturn("UNKNOWN");
-        assertThrows(AuthenticationServiceException.class, () -> filter.attemptAuthentication(request, response));
+        assertThatThrownBy(() -> filter.attemptAuthentication(request, response))
+                .isInstanceOf(AuthenticationServiceException.class);
     }
 
     @Test

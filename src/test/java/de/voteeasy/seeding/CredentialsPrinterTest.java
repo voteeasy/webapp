@@ -2,22 +2,22 @@ package de.voteeasy.seeding;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 class CredentialsPrinterTest {
 
     @Test
     void mainWithoutParamsNoError() {
-        assertDoesNotThrow(() -> CredentialsPrinter.main(null));
+        assertThatCode(() -> CredentialsPrinter.main(null)).doesNotThrowAnyException();
     }
 
     @Test
     void mainWithEmptyParamsNoError() {
-        assertDoesNotThrow(() -> CredentialsPrinter.main(new String[]{}));
+        assertThatCode(() -> CredentialsPrinter.main(new String[]{})).doesNotThrowAnyException();
     }
 
     @Test
     void mainWithParamsNoError() {
-        assertDoesNotThrow(() -> CredentialsPrinter.main(new String[]{"Eene", "meene", "mopel."}));
+        assertThatCode(() -> CredentialsPrinter.main(new String[]{"Eene", "meene", "mopel."})).doesNotThrowAnyException();
     }
 }

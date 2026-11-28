@@ -10,7 +10,9 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import static de.voteeasy.settings.tenant.validation.ValueTypeParser.*;
+import static de.voteeasy.settings.tenant.validation.ValueTypeParser.isValidAlphanumeric;
+import static de.voteeasy.settings.tenant.validation.ValueTypeParser.isValidNumber;
+import static de.voteeasy.settings.tenant.validation.ValueTypeParser.isValidUuid;
 
 @Slf4j
 public class SettingDatatypeIsValidValidator implements ConstraintValidator<SettingDatatypeIsValid, SettingPropertyForm> {

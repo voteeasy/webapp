@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ExtendWith(MockitoExtension.class)
 class SettingDatatypeIsValidValidatorTest {
@@ -18,7 +18,8 @@ class SettingDatatypeIsValidValidatorTest {
 
     @Test
     void initialize() {
-        assertDoesNotThrow(() -> new SettingDatatypeIsValidValidator().initialize(constraint));
+        assertThatCode(() -> new SettingDatatypeIsValidValidator().initialize(constraint))
+                .doesNotThrowAnyException();
     }
 
     @Test

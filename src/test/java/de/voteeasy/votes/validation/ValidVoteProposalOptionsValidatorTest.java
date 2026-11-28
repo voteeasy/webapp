@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ExtendWith(MockitoExtension.class)
 class ValidVoteProposalOptionsValidatorTest {
@@ -18,7 +18,8 @@ class ValidVoteProposalOptionsValidatorTest {
 
     @Test
     void initialize() {
-        assertDoesNotThrow(() -> new ValidVoteProposalOptionsValidator().initialize(constraint));
+        assertThatCode(() -> new ValidVoteProposalOptionsValidator().initialize(constraint))
+                .doesNotThrowAnyException();
     }
 
     @Test

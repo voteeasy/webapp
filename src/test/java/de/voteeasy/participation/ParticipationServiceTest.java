@@ -16,8 +16,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -193,7 +200,7 @@ class ParticipationServiceTest {
         Gathering gathering = new Gathering();
         gathering.setId(UUID.randomUUID());
 
-        assertDoesNotThrow(() -> participationService.deleteFor(gathering));
+        assertThatCode(() -> participationService.deleteFor(gathering)).doesNotThrowAnyException();
         verify(participationRepository).deleteAllByEvent(eq(gathering));
     }
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -45,7 +45,7 @@ class VoteServiceTest extends AbstractIT {
 
     @Test
     void deleteProposalWithRandomIdDoesNotThrowAnyException() {
-        assertAll(() -> voteService.deleteProposalById(UUID.randomUUID()));
+        assertThatCode(() -> voteService.deleteProposalById(UUID.randomUUID())).doesNotThrowAnyException();
     }
 
     @Test
@@ -65,12 +65,12 @@ class VoteServiceTest extends AbstractIT {
 
     @Test
     void startVotingWithRandomIdDoesNotThrowAnyException() {
-        assertAll(() -> voteService.startVoting(UUID.randomUUID()));
+        assertThatCode(() -> voteService.startVoting(UUID.randomUUID())).doesNotThrowAnyException();
     }
 
     @Test
     void stopVotingWithRandomIdDoesNotThrowAnyException() {
-        assertAll(() -> voteService.stopVoting(UUID.randomUUID()));
+        assertThatCode(() -> voteService.stopVoting(UUID.randomUUID())).doesNotThrowAnyException();
     }
 
     @Test
