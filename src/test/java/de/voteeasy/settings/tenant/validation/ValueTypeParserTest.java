@@ -3,6 +3,9 @@ package de.voteeasy.settings.tenant.validation;
 import de.voteeasy.settings.tenant.SettingPropertyForm;
 import de.voteeasy.settings.tenant.SettingType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static de.voteeasy.settings.tenant.validation.ValueTypeParser.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,13 +30,30 @@ class ValueTypeParserTest {
         assertThat(isValidAlphanumeric(SettingPropertyForm.builder().key(KEY).type(ALPHANUMERIC).value(Character.toString(' ')).build())).isFalse();
     }
 
-    @Test
-    void isValidNumberIsTrue() {
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value("0").build())).isTrue();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Long.MIN_VALUE)).build())).isTrue();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Long.MAX_VALUE)).build())).isTrue();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Integer.MIN_VALUE)).build())).isTrue();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Integer.MAX_VALUE)).build())).isTrue();
+    @ParameterizedTest
+    @ValueSource(strings = {"0", "42", "-42", "+42", "-0", "+0", "0042", "-2147483648", "2147483647"})
+    void isValidNumberIsTrue(String value) {
+        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(value).build())).isTrue();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {
+            "lettersAreNotNumbers", "NaN", "Infinity", "-Infinity",
+            "1.5", ".5", "1.", "1e3", "0x2A", "4.9E-324", "1.7976931348623157E308",
+            "1.4E-45", "3.4028235E38", " ", " 42", "42 ", "4 2", "42\n",
+            "+", "-", "--42", "+-42", "\u0664\u0662",
+            "-2147483649", "2147483648", "-9223372036854775808", "9223372036854775807"
+    })
+    void isValidNumberRejectsInvalidValue(String value) {
+        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(value).build())).isFalse();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"ALPHANUMERIC", "UUID", "numeric", "unknown"})
+    void isValidNumberRejectsNonNumericType(String type) {
+        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(type).value("42").build())).isFalse();
     }
 
     @Test
@@ -42,13 +62,8 @@ class ValueTypeParserTest {
         assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).build())).isFalse();
         assertThat(isValidNumber(SettingPropertyForm.builder().type(UUID).build())).isFalse();
         assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).build())).isFalse();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value("NaN").build())).isFalse();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value("").build())).isFalse();
-        // special numbers do not work
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Double.MIN_VALUE)).build())).isFalse();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Double.MAX_VALUE)).build())).isFalse();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Float.MIN_VALUE)).build())).isFalse();
-        assertThat(isValidNumber(SettingPropertyForm.builder().key(KEY).type(NUMERIC).value(String.valueOf(Float.MAX_VALUE)).build())).isFalse();
+        assertThat(isValidNumber(SettingPropertyForm.builder().type(NUMERIC).value("42").build())).isFalse();
+        assertThat(isValidNumber(SettingPropertyForm.builder().key("").type(NUMERIC).value("42").build())).isFalse();
     }
 
     @Test

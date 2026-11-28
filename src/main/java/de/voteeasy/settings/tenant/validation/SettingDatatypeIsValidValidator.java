@@ -4,11 +4,11 @@ import de.voteeasy.settings.tenant.SettingPropertyForm;
 import de.voteeasy.settings.tenant.SettingType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static de.voteeasy.settings.tenant.validation.ValueTypeParser.*;
 
@@ -31,6 +31,8 @@ public class SettingDatatypeIsValidValidator implements ConstraintValidator<Sett
 }
 
 class ValueTypeParser {
+    private static final Pattern INTEGER_VALUE = Pattern.compile("[+-]?[0-9]+");
+
     static boolean isValidAlphanumeric(SettingPropertyForm form) {
         String key = form.getKey().trim();
         String value = form.getValue() != null ? form.getValue().trim() : null;
@@ -40,7 +42,18 @@ class ValueTypeParser {
     static boolean isValidNumber(SettingPropertyForm form) {
         String key = form.getKey();
         String value = form.getValue();
-        return SettingType.NUMERIC.equals(SettingType.parseWithDefault(form.getType())) && !StringUtils.containsWhitespace(value) && StringUtils.isNotEmpty(key) && NumberUtils.isParsable(value);
+        if (!SettingType.NUMERIC.equals(SettingType.parseWithDefault(form.getType()))
+                || StringUtils.isEmpty(key) || value == null || !INTEGER_VALUE.matcher(value).matches()) {
+            return false;
+        }
+
+        try {
+            // The regex checks the format; parsing checks the int range used by ReadSettingService.
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     static boolean isValidUuid(SettingPropertyForm form) {
