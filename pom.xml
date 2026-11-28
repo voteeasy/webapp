@@ -72,7 +72,7 @@
     <java.version>17</java.version>
     <propertiesEncoding>ISO-8859-1</propertiesEncoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <liquibase.version>5.0.1</liquibase.version>
+    <liquibase.version>5.0.4</liquibase.version>
     <testcontainers.version>1.21.4</testcontainers.version>
   </properties>
   <dependencies>
