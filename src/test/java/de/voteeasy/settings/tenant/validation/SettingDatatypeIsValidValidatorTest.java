@@ -48,7 +48,21 @@ class SettingDatatypeIsValidValidatorTest {
 
     @Test
     void isValidNumberForm() {
-        assertThat(new SettingDatatypeIsValidValidator().isValid(SettingPropertyForm.builder().key("someKey").value(String.valueOf(4711)).type("numeric").build(), null)).isTrue();
+        assertThat(new SettingDatatypeIsValidValidator().isValid(SettingPropertyForm.builder().key("someKey").value(String.valueOf(4711)).type("NUMERIC").build(), null)).isTrue();
+    }
+
+    @Test
+    void isInvalidNumberForm() {
+        SettingDatatypeIsValidValidator validator = new SettingDatatypeIsValidValidator();
+        for (String value : new String[]{"lettersAreNotNumbers", "NaN", "1.5", "2147483648"}) {
+            assertThat(validator.isValid(SettingPropertyForm.builder().key("someKey").value(value).type("NUMERIC").build(), null))
+                    .as("NUMERIC value %s", value).isFalse();
+        }
+    }
+
+    @Test
+    void isValidAlphanumericFormWithDigits() {
+        assertThat(new SettingDatatypeIsValidValidator().isValid(SettingPropertyForm.builder().key("someKey").value("42").type("ALPHANUMERIC").build(), null)).isTrue();
     }
 
     @Test
