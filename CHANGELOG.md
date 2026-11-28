@@ -10,6 +10,8 @@ Entries are written in British English.
 ### Added
 
 - Introduced this changelog to document notable changes.
+- Added `AGENTS.md` with project guidance, build and test commands, data-safety
+  rules and coding conventions for coding agents ([Issue #21]).
 - Added a shared IntelliJ IDEA project code style to prevent explicit Java
   imports from being replaced with wildcard imports during optimisation. Only
   the two project code-style files are versioned; personal IDE settings remain
@@ -34,3 +36,4 @@ Entries are written in British English.
   behaviour and allowing values that cannot be read as integers ([PR #19]).
 
 [PR #19]: https://github.com/voteeasy/webapp/pull/19
+[Issue #21]: https://github.com/voteeasy/webapp/issues/21
